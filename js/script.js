@@ -21,9 +21,11 @@ function SmoothPost(data, postPage, redirectPage){
     $.post({
         url: `/post/${postPage}.php`,
         data: data,
-        dataType: "json",
+        processData: false,
+        contentType: false,
         encode: true,
-        success: () => SmoothLoadPage(redirectPage),
+        //success: () => SmoothLoadPage(redirectPage),
+        success: function (errorThrown) { console.log(errorThrown); },
         error: function (errorThrown) { console.log(errorThrown); }
     });
 }

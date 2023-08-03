@@ -8,14 +8,21 @@ $sql->Open();
 
 <div class="contentWrapper">
     <div class="contentContainer">
-        <form id="addCharacterForm">
+        <form id="addCharacterForm" method="post" enctype="multipart/form-data">
             <table>
                 <tr>
-                    <td colspan="2">
+                    <td colspan="3">
                         <h2>Personal</h2>
                     </td>
                 </tr>
                 <tr>
+                    <td rowspan="5">
+                        
+                        <label for="imgBtn" class="imgUploadBtn">
+                            <img src="#" id="imgPreview"/>
+                        </label>
+                        <input type="file" name="image" id="imgBtn" accept="image/*" hidden/>
+                    </td>
                     <td>Owner</td>
                     <td>
                         <select name="owner">
@@ -53,6 +60,8 @@ $sql->Open();
                     <td>Birthdate</td>
                     <td><input type="date" name="birthdate"/></td>
                 </tr>
+            </table>
+            <table>
                 <tr>
                     <td colspan="2">
                         <h2>Relations</h2>

@@ -10,6 +10,7 @@ require("lib/wrapsql.php");
 	<title>Videlib</title>
 	<link rel="stylesheet" href="/css/layout.css">
 	<link rel="stylesheet" href="/css/particles.css">
+	<link rel="stylesheet" href="/css/form.css">
 	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 	
 	<script src="/js/script.js"></script>

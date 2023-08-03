@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterlist.php?${Math.random()}`,
+        url: `/page/addcharacter.php?${Math.random()}`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -36,9 +36,15 @@ function Bind(){
     $("#addCharacterForm").on("submit", (event) => {
         event.preventDefault();
         let formData = new FormData($("#addCharacterForm")[0]);
-        let formDataObj = {};
-        formData.forEach((value, key) => (formDataObj[key] = value));
-        SmoothPost(formDataObj, "character", "characterlist");
+        formData.append('image', $("#imgBtn")[0].files[0])
+        //let formDataObj = {};
+        //formData.forEach((value, key) => (formDataObj[key] = value));
+        SmoothPost(formData, "character", "characterlist");
+    });
+
+
+    $("#imgBtn").on("change", (event) => {
+        $("#imgPreview").attr("src", URL.createObjectURL($("#imgBtn")[0].files[0]));
     });
 }
 

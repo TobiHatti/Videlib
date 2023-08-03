@@ -1,0 +1,43 @@
+@font-face {
+  font-family: Nordica;
+  src: url("NordicaHairline.otf") format("opentype");
+}
+input[type=text],
+input[type=date],
+input[type=radio],
+select,
+button {
+  font-family: Nordica, Calibri, Arial, Helvetica, sans-serif;
+  background-color: transparent;
+  border: 1px solid white;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-family: Nordica, Calibri, Arial, Helvetica, sans-serif;
+  font-weight: lighter;
+  color: white;
+  font-size: 1em;
+  outline: none;
+  margin: 5px 10px;
+}
+
+option {
+  color: black;
+  line-height: 30px;
+}
+
+.imgUploadBtn {
+  display: block;
+  width: 130px;
+  height: 130px;
+  border-radius: 25px;
+  margin: auto;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  margin-right: 20px;
+}
+.imgUploadBtn img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}/*# sourceMappingURL=form.css.map */

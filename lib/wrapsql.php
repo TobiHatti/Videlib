@@ -50,7 +50,7 @@ class WrapMySQL
         if(!$this->isOpen)
         {
             $this->isOpen = true;
-            $this->pdo = new PDO('mysql:host='.$this->dbHostname.';dbname='.$this->dbDatabase, $this->dbUsername, $this->dbPassword, array( PDO::ATTR_PERSISTENT => $this->isPersistent));
+            $this->pdo = new PDO('mysql:host='.$this->dbHostname.';dbname='.$this->dbDatabase.';charset=utf8mb4', $this->dbUsername, $this->dbPassword, array( PDO::ATTR_PERSISTENT => $this->isPersistent));
         }
     }
 
