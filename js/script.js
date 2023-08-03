@@ -1,16 +1,29 @@
-// function SelectMenuOption(elem, page){
+function LoadPage(page){
+    $.get({
+        url: `/page/${page}.php?${Math.random()}`,
+        success: function(response){
+            $("main").html(response);
+            BindMenu();
+            Bind();
+        }
+    });
+}
 
-//     $(elem).attr("style", "--animOffset: 0.0s;");
-//     $(elem).closest(".menuTileWrapper").find(".menuTileSubContainer").each(function(index) {
-//         $(this).addClass("flyOut");
-//     });
+function SmoothLoadPage(page){
+    $(".contentWrapper").addClass("fadeOut");
+    setTimeout(function(){
+        LoadPage(page);
+    },300);
 
-//     setTimeout(function(){
-//         $.get({
-//             url: `/page/${page}.html?${Math.random()}`,
-//             success: function(response){
-//                 $("main").html(response);
-//             }
-//         });
-//     }, 1000);
-// }
+}
+
+function SmoothPost(data, postPage, redirectPage){
+    $.post({
+        url: `/post/${postPage}.php`,
+        data: data,
+        dataType: "json",
+        encode: true,
+        success: () => SmoothLoadPage(redirectPage),
+        error: function (errorThrown) { console.log(errorThrown); }
+    });
+}

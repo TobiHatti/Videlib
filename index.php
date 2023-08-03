@@ -1,3 +1,7 @@
+<?php 
+require("lib/connect.php");
+require("lib/wrapsql.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

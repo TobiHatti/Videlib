@@ -1,6 +1,8 @@
+
+
 $(document).ready(() => {
     $.get({
-        url: `/page/addCharacter.php?${Math.random()}`,
+        url: `/page/characterlist.php?${Math.random()}`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -11,16 +13,7 @@ $(document).ready(() => {
 });
 
 $("header").on("click", function(){
-    if($(".menuTileWrapper").length == 0)
-    {
-        $(".contentWrapper").addClass("fadeOut");
-        setTimeout(function(){
-            $.get({
-                url: `/page/menu.html?${Math.random()}`,
-                success: (response) =>{ $("main").html(response); BindMenu(); }
-            });
-        },300);
-    }
+    if($(".menuTileWrapper").length == 0) SmoothLoadPage("menu");
 })
 
 function BindMenu(){
@@ -31,29 +24,21 @@ function BindMenu(){
             $(this).closest(".menuTileWrapper").find(".menuTileSubContainer").each(function(index) {
                 $(this).addClass("flyOut");
             });
-            setTimeout(function(){
-                LoadPage(p);
-            }, 1000);
+            setTimeout(() => LoadPage(p), 1000);
         });
     });
 }
 
 function Bind(){
-    $("#addCharacter").on("click", function(){
-        $(".contentWrapper").addClass("fadeOut");
-        setTimeout(function(){
-            LoadPage("addCharacter");
-        },300);
+    $("#addCharacter").on("click", () => SmoothLoadPage("addCharacter"));
+
+
+    $("#addCharacterForm").on("submit", (event) => {
+        event.preventDefault();
+        let formData = new FormData($("#addCharacterForm")[0]);
+        let formDataObj = {};
+        formData.forEach((value, key) => (formDataObj[key] = value));
+        SmoothPost(formDataObj, "character", "characterlist");
     });
 }
 
-
-function LoadPage(page){
-    $.get({
-        url: `/page/${page}.php?${Math.random()}`,
-        success: function(response){
-            $("main").html(response);
-            Bind();
-        }
-    });
-}

@@ -1,65 +1,77 @@
+<?php 
+require("../lib/connect.php");
+require("../lib/wrapsql.php");
+$sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"));
+
+$sql->Open();
+?>
+
 <div class="contentWrapper">
     <div class="contentContainer">
+        <form id="addCharacterForm">
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <h2>Personal</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Owner</td>
+                    <td>
+                        <select name="owner">
+                        <?php foreach($sql->ExecuteQuery("SELECT * FROM users") as $row): ?>
+                            <option value="<?= $row["ID"] ?>"><?= $row["Username"] ?></option>
+                        <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td><input type="text" name="name" required/></td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td>
+                        <input type="radio" value="F" name="gender" required/> Female
+                        <input type="radio" value="M" name="gender" required/> Male
+                        <input type="radio" value="X" name="gender" required/> Other
+                    </td>
+                </tr>
+                <tr>
+                    <td>Species</td>
+                    <td>
+                        <input type="text" list="speciesList" name="species"/>
+                        <datalist id="speciesList">
+                            <?php foreach($sql->ExecuteQuery("SELECT DISTINCT Species FROM characters") as $row): ?>
+                                <option value="<?= $row["Species"] ?>"><?= $row["Species"] ?></option>
+                            <?php endforeach; ?>
 
-        <table>
-            <tr>
-                <td colspan="2">
-                    <h2>Personal</h2>
-                </td>
-            </tr>
-            <tr>
-                <td>Owner</td>
-                <td>
-                    <select>
-                        <option>A</option>
-                        <option>B</option>
-                        <option>Shared</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Name</td>
-                <td><input type="text" /></td>
-            </tr>
-            <tr>
-                <td>Gender</td>
-                <td>
-                    <input type="radio" name="gender" /> Female
-                    <input type="radio" name="gender" /> Male
-                    <input type="radio" name="gender" /> Other
-                </td>
-            </tr>
-            <tr>
-                <td>Species</td>
-                <td>
-                    <input type="text" list="speciesList"/>
-                    <datalist id="speciesList">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                    </datalist>
-                </td>
-            </tr>
-            <tr>
-                <td>Birthdate</td>
-                <td><input type="date" /></td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h2>Relations</h2>
-                </td>
-            </tr>
-            <tr>
-                <td>Mother</td>
-                <td><input type="text" list="characterList" /></td>
-            </tr>
-            <tr>
-                <td>Father</td>
-                <td><input type="text" list="characterList" /></td>
-            </tr>
-        </table>
-
-
-        <button>Save</button>
+                        </datalist>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Birthdate</td>
+                    <td><input type="date" name="birthdate"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <h2>Relations</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Mother</td>
+                    <td><input type="text" list="characterList" /></td>
+                </tr>
+                <tr>
+                    <td>Father</td>
+                    <td><input type="text" list="characterList" /></td>
+                </tr>
+            </table>
+            <button type="submit">Save</button>
+        </form>
     </div>
 </div> 
+
+<?php
+$sql->Close();
+?>
