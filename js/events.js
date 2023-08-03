@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/addcharacter.php?${Math.random()}`,
+        url: `/page/characterlist.php?${Math.random()}`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -32,13 +32,14 @@ function BindMenu(){
 function Bind(){
     $("#addCharacter").on("click", () => SmoothLoadPage("addCharacter"));
 
+    $(".realCharacter").each(function(){
+        $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).attr("d-chid")));
+    });
 
     $("#addCharacterForm").on("submit", (event) => {
         event.preventDefault();
         let formData = new FormData($("#addCharacterForm")[0]);
         formData.append('image', $("#imgBtn")[0].files[0])
-        //let formDataObj = {};
-        //formData.forEach((value, key) => (formDataObj[key] = value));
         SmoothPost(formData, "character", "characterlist");
     });
 

@@ -378,10 +378,28 @@ $tileSpacing: 20px;
             margin:auto;
             border: 1px solid rgba(255, 255, 255, 0.5);
             overflow: hidden;
+
+            img{
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
         }
         span{
             display: block;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .name{
             margin-top: 10px;
+        }
+
+        .species{
+            font-size: 0.8em;
+            margin-top: 3px;
+            color: gray;
         }
     }
 }

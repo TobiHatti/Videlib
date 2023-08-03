@@ -11,12 +11,13 @@ $sql->Open();
             <div class="characterBox" id="addCharacter">
                 +
             </div>
-            <?php foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON characters.COwnerID = users.ID ORDER BY Name ASC") as $row): ?>
-            <div class="characterBox">
+            <?php foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID LEFT JOIN character_img ON characters.ID = character_img.CharacterID ORDER BY Name ASC") as $row): ?>
+            <div class="characterBox realCharacter" d-chid="<?= $row["CID"] ?>">
                 <div class="imgContainer">
-                    <img src="">
+                    <img src="<?= $row["FullresPath"] ?>">
                 </div>
-                <span><?= $row["Symbol"] ?> <?= $row["Name"] ?></span>
+                <span class="name"><?= $row["Symbol"] ?> <?= $row["Name"] ?></span>
+                <span class="species"><?= $row["Species"] ?></span>
             </div>
             <?php endforeach; ?>
         </div>

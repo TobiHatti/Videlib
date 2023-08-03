@@ -354,9 +354,25 @@ main {
   border: 1px solid rgba(255, 255, 255, 0.5);
   overflow: hidden;
 }
+.characterBoxContainer .characterBox .imgContainer img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
 .characterBoxContainer .characterBox span {
   display: block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.characterBoxContainer .characterBox .name {
   margin-top: 10px;
+}
+.characterBoxContainer .characterBox .species {
+  font-size: 0.8em;
+  margin-top: 3px;
+  color: gray;
 }
 
 .flyOut {
