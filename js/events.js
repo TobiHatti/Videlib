@@ -1,7 +1,7 @@
 $(document).ready(() => {
     $.get({
-        url: `/page/characterlist.php?${Math.random()}`,
-        success: (response) => { $("main").html(response); BindMenu(); }
+        url: `/page/addCharacter.php?${Math.random()}`,
+        success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
     $.get({
@@ -11,10 +11,16 @@ $(document).ready(() => {
 });
 
 $("header").on("click", function(){
-    $.get({
-        url: `/page/menu.html?${Math.random()}`,
-        success: (response) =>{ $("main").html(response); BindMenu(); }
-    });
+    if($(".menuTileWrapper").length == 0)
+    {
+        $(".contentWrapper").addClass("fadeOut");
+        setTimeout(function(){
+            $.get({
+                url: `/page/menu.html?${Math.random()}`,
+                success: (response) =>{ $("main").html(response); BindMenu(); }
+            });
+        },300);
+    }
 })
 
 function BindMenu(){
@@ -26,13 +32,28 @@ function BindMenu(){
                 $(this).addClass("flyOut");
             });
             setTimeout(function(){
-                $.get({
-                    url: `/page/${p}.php?${Math.random()}`,
-                    success: function(response){
-                        $("main").html(response);
-                    }
-                });
+                LoadPage(p);
             }, 1000);
         });
+    });
+}
+
+function Bind(){
+    $("#addCharacter").on("click", function(){
+        $(".contentWrapper").addClass("fadeOut");
+        setTimeout(function(){
+            LoadPage("addCharacter");
+        },300);
+    });
+}
+
+
+function LoadPage(page){
+    $.get({
+        url: `/page/${page}.php?${Math.random()}`,
+        success: function(response){
+            $("main").html(response);
+            Bind();
+        }
     });
 }

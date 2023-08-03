@@ -3,7 +3,7 @@
 
         <div class="characterBoxContainer">
 
-        <div class="characterBox">
+        <div class="characterBox" id="addCharacter">
             +
         </div>
 
