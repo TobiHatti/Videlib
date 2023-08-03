@@ -18,13 +18,28 @@ body{
     overflow: hidden;
 }
 
-main{
+header{
+    height: 60px;
+    h1{
+        text-align: center;
+        font-weight: 100;
+        color:white;
+        font-size: 3em;
+        user-select: none;
+        margin: 0;
+        margin-top: 10px;
+        text-shadow: 0 0 5px rgba(225,255,225,1);
+    }
+}
 
+main{
+    overflow-y: scroll;
+    height: calc(100vh - 60px);
 }
 
 
-$tileWidth: 300px;
-$tileHeight: 380px;
+$tileWidth: 280px;
+$tileHeight: 340px;
 $tileSpacing: 20px;
 .menuTileWrapper{
     position: relative;
@@ -35,7 +50,7 @@ $tileSpacing: 20px;
     min-width: $tileWidth;
     flex-wrap: wrap;
     max-width: 750px;
-
+    margin-top: 20px;
     animation: fadeIn;
     animation-duration: 1s;
     
@@ -74,7 +89,7 @@ $tileSpacing: 20px;
                 cursor: pointer;
 
                 span{
-                    font-size: 2.8em;
+                    font-size: 2.6em;
                     user-select: none;
                 }
 

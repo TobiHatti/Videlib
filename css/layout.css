@@ -16,22 +16,44 @@ body {
   overflow: hidden;
 }
 
+header {
+  height: 60px;
+}
+header h1 {
+  text-align: center;
+  font-weight: 100;
+  color: white;
+  font-size: 3em;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  margin: 0;
+  margin-top: 10px;
+  text-shadow: 0 0 5px rgb(225, 255, 225);
+}
+
+main {
+  overflow-y: scroll;
+  height: calc(100vh - 60px);
+}
+
 .menuTileWrapper {
   position: relative;
   display: flex;
   margin: auto;
   color: white;
   width: 70%;
-  min-width: 300px;
+  min-width: 280px;
   flex-wrap: wrap;
   max-width: 750px;
+  margin-top: 20px;
   animation: fadeIn;
   animation-duration: 1s;
 }
 .menuTileWrapper .menuTileContainer {
   margin: auto;
   flex-basis: 50%;
-  min-width: 300px;
+  min-width: 280px;
   animation: tileSpin;
   animation-duration: var(--animSpeed);
   animation-delay: var(--animOffset);
@@ -49,8 +71,8 @@ body {
   border: 1px solid white;
   border-radius: 40px;
   box-shadow: 0 0 20px -5px white;
-  height: 380px;
-  width: 300px;
+  height: 340px;
+  width: 280px;
   margin: 20px auto;
   padding-top: 50px;
   text-align: center;
@@ -64,7 +86,7 @@ body {
   cursor: pointer;
 }
 .menuTileWrapper .menuTileContainer .menuTileSubContainer .tile span {
-  font-size: 2.8em;
+  font-size: 2.6em;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
@@ -84,8 +106,8 @@ body {
   box-shadow: 0 0 10px 0 rgb(255, 255, 255);
   border-radius: 60px;
   overflow: hidden;
-  height: 380px;
-  width: 300px;
+  height: 340px;
+  width: 280px;
   z-index: -1;
   animation: tileTiltAfter;
   animation-duration: var(--animSpeed);
@@ -102,8 +124,8 @@ body {
   box-shadow: 0 0 10px 0 rgb(255, 255, 255);
   border-radius: 50px;
   overflow: hidden;
-  height: 380px;
-  width: 300px;
+  height: 340px;
+  width: 280px;
   z-index: -1;
   animation: tileTiltBefore;
   animation-duration: var(--animSpeed);
