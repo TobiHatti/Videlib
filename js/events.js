@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/addcharacter.php?${Math.random()}&c=54`,
+        url: `/page/characterinfo.php?${Math.random()}&c=1958877A-85AD-4A12-82CF-CC937C13434C`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -66,5 +66,11 @@ function Bind(){
         let formData = new FormData($("#addNoteForm")[0]);
         SmoothPost(formData, "characternote", "characterinfo", "c", $("#cid").val());
     });
+
+    let context = $("#canvas")[0].getContext("2d");
+    context.beginPath();
+    context.moveTo(10,35);
+    context.lineTo(180,47);
+    context.stroke();
 }
 

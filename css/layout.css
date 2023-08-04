@@ -480,6 +480,38 @@ h1, h2 {
 .characterInfo .imgCarousel .addImage {
   font-size: 7em;
 }
+.characterInfo .familyTreeView {
+  width: 100%;
+  height: 800px;
+  position: relative;
+}
+.characterInfo .familyTreeView canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.characterInfo .familyTreeView .layerContainer {
+  display: flex;
+  flex-flow: column;
+  width: 100%;
+  height: 100%;
+}
+.characterInfo .familyTreeView .layerContainer .parentContainer,
+.characterInfo .familyTreeView .layerContainer .midContainer,
+.characterInfo .familyTreeView .layerContainer .childContainer {
+  height: 33.33%;
+  position: relative;
+}
+.characterInfo .familyTreeView .layerContainer .parentContainer .node,
+.characterInfo .familyTreeView .layerContainer .midContainer .node,
+.characterInfo .familyTreeView .layerContainer .childContainer .node {
+  position: absolute;
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: lime;
+  border-radius: 100%;
+}
 .characterInfo .noteContainer {
   max-width: 800px;
   margin: auto;

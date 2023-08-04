@@ -40,6 +40,21 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
 
             <h2>Relatives</h2>
 
+            <div class="familyTreeView">
+                <canvas id="canvas"></canvas>
+                <div class="layerContainer">
+                    <div class="parentContainer"  style="background-color: gray;">
+                        <div class="node" id="node2" style="left: 300px; top: 100px;"></div>
+                    </div>
+                    <div class="midContainer">
+                        <div class="node" id="node1" style="left: 100px; top: 100px;"></div>
+                    </div>
+                    <div class="childContainer" style="background-color: gray;">
+
+                    </div>
+                </div>
+            </div>
+
 
             <h2>Notes</h2>
             <div class="noteContainer">

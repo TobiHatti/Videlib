@@ -23,19 +23,19 @@ try
     );
 
     if(!empty($_POST['biomother'])) 
-        $sql->ExecuteNonQuery("INSERT INTO relations (ID, ChildID, ParentID, RelationType) VALUES (?,?,?,?)", 
+        $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
         GUID(), $characterID, $_POST['biomother'], "BiologicalMother");
 
     if(!empty($_POST['biofather'])) 
-        $sql->ExecuteNonQuery("INSERT INTO relations (ID, ChildID, ParentID, RelationType) VALUES (?,?,?,?)", 
+        $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
         GUID(), $characterID, $_POST['biofather'], "BiologicalFather");
 
     if(!empty($_POST['adoptmother'])) 
-        $sql->ExecuteNonQuery("INSERT INTO relations (ID, ChildID, ParentID, RelationType) VALUES (?,?,?,?)", 
+        $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
         GUID(), $characterID, $_POST['adoptmother'], "AdoptedMother");
 
     if(!empty($_POST['adoptfather'])) 
-        $sql->ExecuteNonQuery("INSERT INTO relations (ID, ChildID, ParentID, RelationType) VALUES (?,?,?,?)", 
+        $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
         GUID(), $characterID, $_POST['adoptfather'], "AdoptedFather");
 
 

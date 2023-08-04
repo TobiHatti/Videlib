@@ -30,9 +30,9 @@ require("lib/wrapsql.php");
 
 	<title>Vide</title>
 	<link rel="icon" type="image/x-icon" href="/files/favicon.ico">
-	<link rel="stylesheet" href="/css/layout.css">
-	<link rel="stylesheet" href="/css/particles.css">
-	<link rel="stylesheet" href="/css/form.css">
+	<link rel="stylesheet" href="/css/layout.css?1">
+	<link rel="stylesheet" href="/css/particles.css?1">
+	<link rel="stylesheet" href="/css/form.css?1">
 	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 	<script src="/js/script.js"></script>
 </head>
