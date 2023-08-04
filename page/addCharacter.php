@@ -5,11 +5,11 @@ $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), geten
 
 $sql->Open();
 
-class Character{
-    public int $value = 0;
+class Character{ 
+    public string $value = 0;
     public string $name = "";
 
-    public function __construct(int $value, string $name)
+    public function __construct(string $value, string $name)
     {
         $this->value = $value;
         $this->name = $name;
@@ -17,9 +17,9 @@ class Character{
 }
 
 $characters = array();
-foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON characters.COwnerID = users.ID ORDER BY Name ASC") as $row)
+foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID ORDER BY Name ASC") as $row)
 {
-    array_push($characters, new Character($row["ID"], $row["Name"]." (".$row["Symbol"].") [".$row["Species"]."]"));
+    array_push($characters, new Character($row["CID"], $row["Name"]." (".$row["Symbol"].") [".$row["Species"]."]"));
 }
 
 ?>

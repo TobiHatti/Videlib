@@ -66,11 +66,5 @@ function Bind(){
         let formData = new FormData($("#addNoteForm")[0]);
         SmoothPost(formData, "characternote", "characterinfo", "c", $("#cid").val());
     });
-
-    let context = $("#canvas")[0].getContext("2d");
-    context.beginPath();
-    context.moveTo(10,35);
-    context.lineTo(180,47);
-    context.stroke();
 }
 
