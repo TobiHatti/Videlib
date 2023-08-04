@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterlist.php?${Math.random()}`,
+        url: `/page/characterinfo.php?${Math.random()}&c=54`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -43,9 +43,28 @@ function Bind(){
         SmoothPost(formData, "character", "characterlist");
     });
 
-
     $("#imgBtn").on("change", (event) => {
         $("#imgPreview").attr("src", URL.createObjectURL($("#imgBtn")[0].files[0]));
+    });
+
+    $("#imgBtn").on("change", (event) => $("#addImageForm").submit());
+
+    $("#addImageForm").on("submit", (event) => {
+        event.preventDefault();
+        let formData = new FormData($("#addImageForm")[0]);
+        formData.append('image', $("#imgBtn")[0].files[0])
+        SmoothPost(formData, "characterimg", "characterinfo", "c", $("#cid").val());
+    });
+
+    $(".carouselImg").each(function(){
+        let elem = $(this);
+        $(this).on("click", () => $("#mainImg").attr("src", elem.find("img").attr("src")));
+    });
+
+    $("#addNoteForm").on("submit", (event) => {
+        event.preventDefault();
+        let formData = new FormData($("#addNoteForm")[0]);
+        SmoothPost(formData, "characternote", "characterinfo", "c", $("#cid").val());
     });
 }
 

@@ -20,14 +20,17 @@ function SmoothLoadPage(page, getKey = null, getValue = null){
 
 }
 
-function SmoothPost(data, postPage, redirectPage){
+function SmoothPost(data, postPage, redirectPage, getKey = null, getValue = null){
     $.post({
         url: `/post/${postPage}.php`,
         data: data,
         processData: false,
         contentType: false,
         encode: true,
-        success: () => SmoothLoadPage(redirectPage),
+        success: () => 
+        {
+            if(redirectPage != null) SmoothLoadPage(redirectPage, getKey, getValue)
+        },
         //success: function (errorThrown) { console.log(errorThrown); },
         error: function (errorThrown) { console.log(errorThrown); }
     });

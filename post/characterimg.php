@@ -1,6 +1,7 @@
 <?php 
 require("../lib/connect.php");
 require("../lib/wrapsql.php");
+require("../lib/util.php");
 $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"));
 
 $status = 200;
@@ -36,10 +37,3 @@ finally{
 }
 
 echo(http_response_code($status));
-
-
-function GUID()
-{
-    if (function_exists('com_create_guid') === true) return trim(com_create_guid(), '{}');
-    return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
-}

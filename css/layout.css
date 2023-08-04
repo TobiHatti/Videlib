@@ -3,6 +3,7 @@
   src: url("NordicaHairline.otf") format("opentype");
 }
 html {
+  background-color: rgb(7, 1, 31);
   background: linear-gradient(180deg, rgb(7, 1, 31) 0%, rgb(19, 1, 48) 100%);
   font-family: Nordica, Calibri, Arial, Helvetica, sans-serif;
   font-weight: lighter;
@@ -216,6 +217,7 @@ main {
   color: white;
   width: 90%;
   margin-top: 30px;
+  margin-bottom: 40px;
   animation: fadeIn;
   animation-duration: 1s;
 }
@@ -406,4 +408,106 @@ main {
   100% {
     opacity: 0;
   }
+}
+.characterInfo h1 {
+  font-weight: lighter;
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 0;
+}
+.characterInfo h2 {
+  font-weight: lighter;
+  text-align: center;
+  font-size: 1.5em;
+}
+.characterInfo h2.species {
+  margin-top: 4px;
+  color: gray;
+}
+.characterInfo .mainImg {
+  border-radius: 30px;
+  margin: auto;
+  border: 1px solid white;
+  overflow: hidden;
+  max-height: 450px;
+  max-width: 350px;
+}
+.characterInfo .mainImg img {
+  max-height: 100%;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.characterInfo .imgCarousel {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+.characterInfo .imgCarousel .carouselItem {
+  border-radius: 10px;
+  margin: 5px;
+  border: 1px solid white;
+  overflow: hidden;
+  height: 100px;
+  width: 80px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  transition: all 0.2s ease;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  cursor: pointer;
+}
+.characterInfo .imgCarousel .carouselItem img {
+  max-height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.characterInfo .imgCarousel .carouselItem:hover {
+  background-color: rgba(246, 223, 255, 0.5);
+  box-shadow: 0 0 30px 0 rgba(242, 223, 255, 0.486);
+  transform: scale(1.1) rotate(-5deg);
+}
+.characterInfo .imgCarousel .addImage {
+  font-size: 7em;
+}
+.characterInfo .noteContainer {
+  max-width: 800px;
+  margin: auto;
+}
+.characterInfo .noteContainer .newPostContainer {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.characterInfo .noteContainer .newPostContainer textarea {
+  resize: none;
+  width: 100%;
+  border-radius: 20px;
+}
+.characterInfo .noteContainer .newPostContainer button {
+  height: 100px;
+  width: 80px;
+  border-radius: 20px;
+}
+.characterInfo .noteContainer .note {
+  border: 1px solid white;
+  border-radius: 20px;
+  margin: 5px;
+  position: relative;
+}
+.characterInfo .noteContainer .note span {
+  position: absolute;
+  top: 6px;
+  left: 20px;
+  color: gray;
+  font-size: 0.9em;
+}
+.characterInfo .noteContainer .note p {
+  margin: 0;
+  padding: 25px 12px 8px;
 }/*# sourceMappingURL=layout.css.map */
