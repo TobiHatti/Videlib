@@ -6,7 +6,7 @@ $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), geten
 $sql->Open();
 
 class Character{ 
-    public string $value = 0;
+    public string $value = "";
     public string $name = "";
 
     public function __construct(string $value, string $name)

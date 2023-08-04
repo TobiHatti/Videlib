@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterinfo.php?${Math.random()}&c=1958877A-85AD-4A12-82CF-CC937C13434C`,
+        url: `/page/characterinfo.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -66,5 +66,11 @@ function Bind(){
         let formData = new FormData($("#addNoteForm")[0]);
         SmoothPost(formData, "characternote", "characterinfo", "c", $("#cid").val());
     });
+
+
+    $(".treeNode").each(function(){
+        $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).attr("d-chid")));
+    });
+
 }
 

@@ -482,7 +482,6 @@ h1, h2 {
 }
 .characterInfo .familyTreeView {
   width: 100%;
-  height: 800px;
   position: relative;
 }
 .characterInfo .familyTreeView canvas {
@@ -499,18 +498,55 @@ h1, h2 {
 .characterInfo .familyTreeView .layerContainer .parentContainer,
 .characterInfo .familyTreeView .layerContainer .midContainer,
 .characterInfo .familyTreeView .layerContainer .childContainer {
-  height: 33.33%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
 }
-.characterInfo .familyTreeView .layerContainer .parentContainer .node,
-.characterInfo .familyTreeView .layerContainer .midContainer .node,
-.characterInfo .familyTreeView .layerContainer .childContainer .node {
-  position: absolute;
-  display: block;
-  width: 20px;
-  height: 20px;
-  background-color: lime;
-  border-radius: 100%;
+.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode,
+.characterInfo .familyTreeView .layerContainer .midContainer .treeNode,
+.characterInfo .familyTreeView .layerContainer .childContainer .treeNode {
+  width: 100px;
+  height: 120px;
+  border: 1px solid white;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  margin: 25px 15px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode .nodeImg,
+.characterInfo .familyTreeView .layerContainer .midContainer .treeNode .nodeImg,
+.characterInfo .familyTreeView .layerContainer .childContainer .treeNode .nodeImg {
+  width: 100%;
+  height: 90px;
+  margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+}
+.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode .nodeImg img,
+.characterInfo .familyTreeView .layerContainer .midContainer .treeNode .nodeImg img,
+.characterInfo .familyTreeView .layerContainer .childContainer .treeNode .nodeImg img {
+  max-height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode span,
+.characterInfo .familyTreeView .layerContainer .midContainer .treeNode span,
+.characterInfo .familyTreeView .layerContainer .childContainer .treeNode span {
+  text-align: center;
+  padding-top: 5px;
+}
+.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode:hover,
+.characterInfo .familyTreeView .layerContainer .midContainer .treeNode:hover,
+.characterInfo .familyTreeView .layerContainer .childContainer .treeNode:hover {
+  background-color: rgba(246, 223, 255, 0.5);
+  box-shadow: 0 0 30px 0 rgba(242, 223, 255, 0.486);
+  transform: scale(1.1) rotate(-5deg);
 }
 .characterInfo .noteContainer {
   max-width: 800px;

@@ -3,6 +3,8 @@ require("../lib/connect.php");
 require("../lib/wrapsql.php");
 require("../lib/util.php");
 require("../lib/ageCalc.php");
+require("../lib/familyTree.php");
+
 AgeCalc::Init(1);
 $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"),false);
 
@@ -40,17 +42,52 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
 
             <h2>Relatives</h2>
 
+
+            <?php
+            $sql->Close();
+            $tree = FamilyTree::CreateTree($characterID);
+            $sql->Open();
+            ?>
+
             <div class="familyTreeView">
                 <canvas id="canvas"></canvas>
                 <div class="layerContainer">
-                    <div class="parentContainer"  style="background-color: gray;">
-                        <div class="node" id="node2" style="left: 300px; top: 100px;"></div>
+                    <div class="parentContainer">
+                        <?php foreach($tree->parents as $parent): ?>
+                        <div class="treeNode" d-chid="<?= $parent->characterID ?>">
+                            <div class="nodeImg">
+                                <img src="<?= Img($parent->cdata["FullresPath"], $parent->cdata["Name"])?>" />
+                            </div>
+                            <span><?= $parent->cdata["Symbol"] ?> <?= $parent->cdata["Name"] ?></span>
+                        </div>
+                        <?php endforeach; ?>
                     </div>
-                    <div class="midContainer">
-                        <div class="node" id="node1" style="left: 100px; top: 100px;"></div>
-                    </div>
-                    <div class="childContainer" style="background-color: gray;">
 
+                    <div class="midContainer">
+                        <div class="treeNode" d-chid="<?= $tree->characterID ?>">
+                            <div class="nodeImg">
+                                <img src="<?= Img($tree->cdata["FullresPath"], $tree->cdata["Name"])?>" />
+                            </div>
+                            <span><?= $tree->cdata["Symbol"] ?> <?= $tree->cdata["Name"] ?></span>
+                        </div>
+                        <?php foreach($tree->partners as $partner): ?>
+                        <div class="treeNode" d-chid="<?= $partner->characterID ?>">
+                            <div class="nodeImg">
+                                <img src="<?= Img($partner->cdata["FullresPath"], $partner->cdata["Name"])?>" />
+                            </div>
+                            <span><?= $partner->cdata["Symbol"] ?> <?= $partner->cdata["Name"] ?></span>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="childContainer">
+                        <?php foreach($tree->children as $child): ?>
+                        <div class="treeNode" d-chid="<?= $child->characterID ?>">
+                            <div class="nodeImg">
+                                <img src="<?= Img($child->cdata["FullresPath"], $child->cdata["Name"])?>" />
+                            </div>
+                            <span><?= $child->cdata["Symbol"] ?> <?= $child->cdata["Name"] ?></span>
+                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
