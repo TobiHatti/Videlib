@@ -38,6 +38,11 @@ main {
   height: calc(100vh - 60px);
 }
 
+h1, h2 {
+  text-align: center;
+  font-weight: lighter;
+}
+
 .menuTileWrapper {
   position: relative;
   display: flex;
@@ -510,4 +515,39 @@ main {
 .characterInfo .noteContainer .note p {
   margin: 0;
   padding: 25px 12px 8px;
+}
+
+.personalSection,
+.relationsSection {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.personalSection input[type=text],
+.personalSection input[type=date],
+.personalSection select,
+.relationsSection input[type=text],
+.relationsSection input[type=date],
+.relationsSection select {
+  width: 240px;
+  box-sizing: border-box;
+}
+.personalSection span,
+.relationsSection span {
+  width: 100px;
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+.personalSection table tr td,
+.relationsSection table tr td {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.addCharacterSubmitBtn {
+  margin: 20px auto;
+  display: block;
 }/*# sourceMappingURL=layout.css.map */

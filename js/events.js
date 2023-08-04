@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterinfo.php?${Math.random()}&c=54`,
+        url: `/page/addcharacter.php?${Math.random()}&c=54`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 

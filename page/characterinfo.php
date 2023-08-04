@@ -45,7 +45,7 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
             <div class="noteContainer">
                 <form id="addNoteForm" method="post">
                     <div class="newPostContainer">
-                    <textarea name="note" placeholder="Add note..."></textarea>
+                    <textarea name="note" placeholder="Add note..." required></textarea>
                     <input type="hidden" value="<?= $characterID ?>" name="character"/>
                     <button type="submit">Post</button>
                     </div>

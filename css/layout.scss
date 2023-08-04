@@ -38,6 +38,11 @@ main{
     height: calc(100vh - 60px);
 }
 
+h1, h2{
+    text-align: center;
+    font-weight: lighter;
+}
+
 
 $tileWidth: 280px;
 $tileHeight: 340px;
@@ -549,6 +554,41 @@ $tileSpacing: 20px;
                 padding: 25px 12px 8px;
             }
         }
-        
     }
+}
+
+.personalSection,
+.relationsSection{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    input[type="text"],
+    input[type="date"],
+    select{
+        width: 240px;
+        box-sizing: border-box;
+    }
+
+    span{
+        width: 100px;
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    table{
+        tr{
+            td{
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+        }
+    }
+}
+.addCharacterSubmitBtn{
+    margin: 20px auto;
+    display: block;
 }
