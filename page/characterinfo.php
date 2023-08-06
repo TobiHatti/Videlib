@@ -3,7 +3,7 @@ require("../lib/connect.php");
 require("../lib/wrapsql.php");
 require("../lib/util.php");
 require("../lib/ageCalc.php");
-require("../lib/familyTree.php");
+require("../lib/familyTreeV2.php");
 
 AgeCalc::Init(1);
 $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"),false);
@@ -53,36 +53,13 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
                 <canvas id="canvas"></canvas>
                 <div class="layerContainer">
                     <div class="parentContainer">
-                        <?php foreach($tree->parents as $parent): ?>
-                        <div class="treeNode" d-chid="<?= $parent->characterID ?>">
+                        <?php foreach($tree->parentNodes as $parent): ?>
+                        <div class="treeNode" d-chid="">
                             <div class="nodeImg">
-                                <img src="<?= Img($parent->cdata["FullresPath"], $parent->cdata["Name"])?>" />
+                                <img src="" />
                             </div>
-                            <span><?= $parent->cdata["Symbol"] ?> <?= $parent->cdata["Name"] ?></span>
-                            <svg class="branch" viewbox="-250 -100 500 200"><?= $parent->GetSvgRelationPaths() ?></svg>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <div class="midContainer">
-                        <?php foreach($tree->partners as $partner): ?>
-                        <div class="treeNode" d-chid="<?= $partner->characterID ?>">
-                            <div class="nodeImg">
-                                <img src="<?= Img($partner->cdata["FullresPath"], $partner->cdata["Name"])?>" />
-                            </div>
-                            <span><?= $partner->cdata["Symbol"] ?> <?= $partner->cdata["Name"] ?></span>
-                            <svg class="branch" viewbox="-250 -100 500 200"><?= $partner->GetSvgRelationPaths() ?></svg>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <div class="childContainer">
-                        <?php foreach($tree->children as $child): ?>
-                        <div class="treeNode" d-chid="<?= $child->characterID ?>">
-                            <div class="nodeImg">
-                                <img src="<?= Img($child->cdata["FullresPath"], $child->cdata["Name"])?>" />
-                            </div>
-                            <span><?= $child->cdata["Symbol"] ?> <?= $child->cdata["Name"] ?></span>
-                            <svg class="branch" viewbox="-250 -100 500 200"><?= $child->GetSvgRelationPaths() ?></svg>
+                            <span></span>
+                            <svg class="branch" viewbox="-250 -100 500 200"></svg>
                         </div>
                         <?php endforeach; ?>
                     </div>
