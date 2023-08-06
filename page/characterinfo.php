@@ -39,6 +39,7 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
                 <?php endforeach;?>
             </div>   
 
+            <br><br>
 
             <h2>Relatives</h2>
 
@@ -48,7 +49,6 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
             $tree = FamilyTree::CreateTree($characterID);
             $sql->Open();
             ?>
-
             <div class="familyTreeView">
                 <canvas id="canvas"></canvas>
                 <div class="layerContainer">
@@ -59,23 +59,19 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
                                 <img src="<?= Img($parent->cdata["FullresPath"], $parent->cdata["Name"])?>" />
                             </div>
                             <span><?= $parent->cdata["Symbol"] ?> <?= $parent->cdata["Name"] ?></span>
+                            <svg class="branch" viewbox="-250 -100 500 200"><?= $parent->GetSvgRelationPaths() ?></svg>
                         </div>
                         <?php endforeach; ?>
                     </div>
 
                     <div class="midContainer">
-                        <div class="treeNode" d-chid="<?= $tree->characterID ?>">
-                            <div class="nodeImg">
-                                <img src="<?= Img($tree->cdata["FullresPath"], $tree->cdata["Name"])?>" />
-                            </div>
-                            <span><?= $tree->cdata["Symbol"] ?> <?= $tree->cdata["Name"] ?></span>
-                        </div>
                         <?php foreach($tree->partners as $partner): ?>
                         <div class="treeNode" d-chid="<?= $partner->characterID ?>">
                             <div class="nodeImg">
                                 <img src="<?= Img($partner->cdata["FullresPath"], $partner->cdata["Name"])?>" />
                             </div>
                             <span><?= $partner->cdata["Symbol"] ?> <?= $partner->cdata["Name"] ?></span>
+                            <svg class="branch" viewbox="-250 -100 500 200"><?= $partner->GetSvgRelationPaths() ?></svg>
                         </div>
                         <?php endforeach; ?>
                     </div>
@@ -86,6 +82,7 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
                                 <img src="<?= Img($child->cdata["FullresPath"], $child->cdata["Name"])?>" />
                             </div>
                             <span><?= $child->cdata["Symbol"] ?> <?= $child->cdata["Name"] ?></span>
+                            <svg class="branch" viewbox="-250 -100 500 200"><?= $child->GetSvgRelationPaths() ?></svg>
                         </div>
                         <?php endforeach; ?>
                     </div>
