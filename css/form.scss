@@ -45,3 +45,28 @@ option {
         object-fit: cover;
     }
 }
+
+
+::-webkit-scrollbar
+{
+    
+    width: 6px;  /* for vertical scrollbars */
+    height: 6px; /* for horizontal scrollbars */
+
+}
+
+::-webkit-scrollbar-track
+{
+    background: rgba(0, 0, 0, 0.1);
+
+    
+}
+
+::-webkit-scrollbar-thumb
+{
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    &:hover{
+        background: rgba(84, 15, 148, 0.932); 
+    }
+}
