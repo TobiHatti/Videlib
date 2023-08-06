@@ -635,4 +635,65 @@ h1, h2 {
 .addCharacterSubmitBtn {
   margin: 20px auto;
   display: block;
+}
+
+.ageList {
+  display: flex;
+  flex-flow: column;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ageList .tab {
+  height: 70px;
+  width: 300px;
+  border-radius: 20px;
+  border: 1px solid white;
+  overflow: hidden;
+  margin: 10px 0;
+  box-sizing: border-box;
+  display: flex;
+  padding-left: 5px;
+  align-items: center;
+  justify-content: space-between;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.ageList .tab .imgContainer {
+  border-radius: 15px;
+  border: 1px solid white;
+  width: 50px;
+  height: 60px;
+  overflow: hidden;
+  flex: 0 0 50px;
+}
+.ageList .tab .imgContainer img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.ageList .tab .textContainer {
+  padding-left: 10px;
+}
+.ageList .tab .textContainer span {
+  display: block;
+}
+.ageList .tab .textContainer .main {
+  font-size: 1.2em;
+}
+.ageList .tab .textContainer .sub {
+  color: lightgray;
+  font-size: 0.9em;
+}
+.ageList .tab .ageBox {
+  font-size: 3em;
+  padding-right: 10px;
+  padding-top: 10px;
+}
+.ageList .tab:hover {
+  background-color: rgba(246, 223, 255, 0.5);
+  box-shadow: 0 0 30px 0 rgba(242, 223, 255, 0.486);
 }/*# sourceMappingURL=layout.css.map */

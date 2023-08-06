@@ -14,7 +14,7 @@ try
     $sql->Open();
     $sql->ExecuteNonQuery("INSERT INTO characters (ID, PartyID, COwnerID, Name, Gender, Species, Birthdate) VALUES (?,?,?,?,?,?,?); ", 
         $characterID,
-        1,
+        $_SESSION["VidePID"],
         $_POST['owner'],
         $_POST['name'],
         $_POST['gender'],

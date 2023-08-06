@@ -16,7 +16,7 @@ $sql->Open();
 INNER JOIN users ON characters.COwnerID = users.ID
 LEFT JOIN character_img ON (
 	characters.ID = character_img.CharacterID AND character_img.MainImg = (SELECT MAX(MainImg) FROM character_img WHERE character_img.CharacterID = characters.ID)
-) WHERE PartyID = ? ORDER BY characters.Name ASC", 1) as $row): ?>
+) WHERE PartyID = ? ORDER BY characters.Name ASC", $_SESSION["VidePID"]) as $row): ?>
             <div class="characterBox realCharacter" d-chid="<?= $row["CID"] ?>">
                 <div class="imgContainer">
                     <img src="<?= Img($row["FullresPath"], $row["Name"]) ?>"> 

@@ -676,3 +676,69 @@ $tileSpacing: 20px;
     margin: 20px auto;
     display: block;
 }
+
+
+.ageList{
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    align-items: center;
+    .tab{
+        height: 70px;
+        width: 300px;
+        border-radius: 20px;
+        border: 1px solid white;
+        overflow: hidden;
+        margin: 10px 0;
+        box-sizing: border-box;
+        display: flex;
+        padding-left: 5px;
+        align-items: center;
+        justify-content: space-between;
+        user-select: none;
+        cursor: pointer;
+        transition: all 0.2s ease; 
+
+        .imgContainer{
+            border-radius: 15px;
+            border: 1px solid white;
+            width: 50px;
+            height: 60px;
+            overflow: hidden;
+            flex: 0 0 50px;
+
+            img{
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
+        }
+
+        .textContainer{
+            padding-left: 10px;
+            span{
+                display: block;
+            }
+
+            .main{
+                font-size: 1.2em;
+            }
+
+            .sub{
+                color:lightgray;
+                font-size: 0.9em;
+            }
+        }
+
+        .ageBox{
+            font-size: 3em;
+            padding-right: 10px;
+            padding-top: 10px;
+        }
+
+        &:hover{
+            background-color: rgba(246, 223, 255, 0.5);
+            box-shadow: 0 0 30px 0 rgba(242, 223, 255, 0.486);
+        }
+    }
+}

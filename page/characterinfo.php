@@ -5,7 +5,7 @@ require("../lib/util.php");
 require("../lib/ageCalc.php");
 require("../lib/familyTreeV2.php");
 
-AgeCalc::Init(1);
+AgeCalc::Init($_SESSION["VidePID"]);
 $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"),false);
 
 $characterID = $_GET['c'];

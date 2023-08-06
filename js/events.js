@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterinfo.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
+        url: `/page/ages.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -67,13 +67,16 @@ function Bind(){
         SmoothPost(formData, "characternote", "characterinfo", "c", $("#cid").val());
     });
 
-
     $(".treeNode").each(function(){
         $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).attr("d-chid")));
     });
 
     $("svg.branch").each(function(){
         $(this).attr("viewbox", `-${$(this).width()/2} -${$(this).height()/2} ${$(this).width()} ${$(this).height()}`);
+    });
+
+    $(".tab").each(function(){
+        $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).attr("d-chid")));
     });
 }
 

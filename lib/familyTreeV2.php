@@ -4,7 +4,7 @@ class FamilyTree {
     public static function CreateTree(string $rootNodeID, int $depth = 1) {
 
         $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"));
-        return new TreeNode($rootNodeID, $sql, $depth);
+        return new TreeNode($rootNodeID, $sql, $depth, 0);
     }
 }
 
@@ -32,9 +32,12 @@ class TreeNode {
     public FamilyEntity $entity;
     public array $parentNodes;
     public array $partnerNodes;
+    public int $layer;
 
-    public function __construct(string $characterID, WrapMySQL $sql, int $depth)
+    public function __construct(string $characterID, WrapMySQL $sql, int $depth, int $layer)
     {
+        $this->layer = $layer;
+
         $this->parentNodes = array();
         $this->partnerNodes = array();
 
@@ -93,8 +96,8 @@ class TreeNode {
             // alternate positions for partners
             $alternator = true;
             foreach($partnersRaw as $partnerRelation){
-                if($alternator) array_push($this->partnerNodes, new TreeRelation($this, $partnerRelation["CID"], $sql, $depth));
-                else array_push($this->partnerNodes, new TreeRelation($partnerRelation["CID"], $this, $sql, $depth));
+                if($alternator) array_push($this->partnerNodes, new TreeRelation($this, $partnerRelation["CID"], $sql, $depth, $layer));
+                else array_push($this->partnerNodes, new TreeRelation($partnerRelation["CID"], $this, $sql, $depth, $layer));
                 $alternator != $alternator;
             }
 
@@ -121,8 +124,8 @@ class TreeNode {
 
     private function InstanciateParentNode($parentArray, $parentType, $sql, $depth){
         switch(count($parentArray)){
-            case 2: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], $parentArray[1]["CID"], $sql, $depth, $this));
-            case 1: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], null, $sql, $depth, $this));
+            case 2: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], $parentArray[1]["CID"], $sql, $depth, $this->layer-1, $this));
+            case 1: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], null, $sql, $depth, $this->layer-1, $this));
         }
     }
 }
@@ -134,21 +137,21 @@ class TreeRelation {
     
     public string $nodeColor;
 
-    public function __construct($leftNode, $rightNode,WrapMySQL $sql,int $depth,?TreeNode $callingChild = null)
+    public function __construct($leftNode, $rightNode,WrapMySQL $sql,int $depth, int $layer,?TreeNode $callingChild = null)
     {
         $this->nodeColor = RandomColor();
 
         if(is_object($leftNode)) $this->leftNode = $leftNode;
-        else $this->leftNode = new TreeNode($leftNode, $sql, $depth - 1);
+        else $this->leftNode = new TreeNode($leftNode, $sql, $depth - 1, $layer);
 
         $childrenIDs = null;
 
         if($rightNode != null) {
             if(is_object($rightNode)) $this->rightNode = $rightNode;
-            else $this->rightNode = new TreeNode($rightNode, $sql, $depth - 1);
+            else $this->rightNode = new TreeNode($rightNode, $sql, $depth - 1, $layer);
         }
         else{
-            $this->rightNode = new TreeNode("dummy", $sql, $depth - 1);
+            $this->rightNode = new TreeNode("dummy", $sql, $depth - 1, $layer);
         }
 
         $sql->Open();
@@ -170,7 +173,7 @@ class TreeRelation {
         $this->childrenNodes = array();
         foreach($childrenIDs as $child){
             if($callingChild != null && $child["ChildID"] == $callingChild->entity->characterID) array_push($this->childrenNodes, $callingChild);
-            else array_push($this->childrenNodes, new TreeNode($child["ChildID"], $sql, $depth - 1));
+            else array_push($this->childrenNodes, new TreeNode($child["ChildID"], $sql, $depth - 1, $layer + 1 ));
         }
     } 
 
