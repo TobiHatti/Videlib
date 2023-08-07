@@ -97,12 +97,16 @@ h1, h2 {
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+  display: block;
 }
-.menuTileWrapper .menuTileContainer .menuTileSubContainer .tile p {
+.menuTileWrapper .menuTileContainer .menuTileSubContainer .tile img {
   margin: 0;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+  height: 180px;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 .menuTileWrapper .menuTileContainer .menuTileSubContainer .tile::after {
   content: "";

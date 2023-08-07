@@ -30,6 +30,8 @@ function BindMenu(){
 }
 
 function Bind(){
+    
+
     $("#addCharacter").on("click", () => SmoothLoadPage("addCharacter"));
 
     $(".realCharacter").each(function(){
@@ -106,8 +108,5 @@ function Bind(){
         let formData = new FormData($("#newExistingPartnerForm")[0]);
         SmoothPost(formData, "addPartner", "characterinfo", "c", $("#cid").val());
     });
-
-    
-    
 }
 

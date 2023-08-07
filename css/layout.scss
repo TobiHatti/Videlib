@@ -98,11 +98,15 @@ $tileSpacing: 20px;
                 span{
                     font-size: 2.6em;
                     user-select: none;
+                    display: block;
                 }
 
-                p{
+                img{
                     margin: 0;
                     user-select: none;
+         
+                    height: 180px;
+                    object-fit: cover;
                 }
 
                 &::after{
