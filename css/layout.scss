@@ -41,6 +41,7 @@ main{
 h1, h2{
     text-align: center;
     font-weight: lighter;
+    color:white;
 }
 
 
@@ -547,6 +548,7 @@ $tileSpacing: 20px;
                     align-items: center;
                     margin: 30px 20px;
                     transition: all 0.2s ease;
+                    user-select: none;
                     cursor: pointer;
                     .nodeImg{
                         width: 100%;
@@ -754,8 +756,8 @@ $tileSpacing: 20px;
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(35, 0, 54, 0.6);
-        backdrop-filter: blur(10px);
+        background-color: rgba(18, 0, 27, 0.6);
+        
     }
     .modal{
         position: fixed;
@@ -769,9 +771,28 @@ $tileSpacing: 20px;
         transform: translate(-50%, -50%);
         min-width: 300px;
         min-height: 300px;
-    }
+        box-sizing: border-box;
 
-    
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .modalContent{
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            
+            button{
+                width: 100%;
+            }
+        }
+    }
 }
 
 .modClose{
@@ -782,11 +803,67 @@ $tileSpacing: 20px;
     opacity: 1;    
 }
 
+.modOpen{
+    animation: modalFadeIn;
+    animation-duration: 0.4s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+    opacity: 0;    
+}
+
+.modContentFadeOut{
+    animation: modalContentFadeOut;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+    opacity: 1;    
+}
+
+.modContentFadeIn{
+    animation: modalContentFadeIn;
+    animation-duration: 0.4s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+    opacity: 0;    
+}
+
 @keyframes modalFadeOut {
+    0%{
+        opacity: 1;
+        backdrop-filter: blur(5px);
+    }
+    100%{
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+}
+
+@keyframes modalFadeIn {
+    0%{
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    100%{
+        opacity: 1;
+        backdrop-filter: blur(5px);
+    }
+}
+
+
+@keyframes modalContentFadeOut {
     0%{
         opacity: 1;
     }
     100%{
         opacity: 0;
+    }
+}
+
+@keyframes modalContentFadeIn {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
     }
 }

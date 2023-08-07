@@ -42,6 +42,12 @@ require("lib/wrapsql.php");
 		<h1>Vide</h1>
 	</header>
 	<main></main>
+	<div class="modalWrapper modClose" style="display: none;">
+		<div class="modalBlur"></div>
+		<div class="modal">
+			<div class="modalContent"></div>
+		</div>
+	</div> 
 	<script src="/js/events.js"></script>
 </body>
 </html>

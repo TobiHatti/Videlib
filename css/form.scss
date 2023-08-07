@@ -24,6 +24,15 @@ button {
     margin: 5px 10px;
 }
 
+button{
+    transition: 0.1s ease;
+    cursor: pointer;
+    &:hover{
+        background-color: rgba(246, 223, 255, 0.5);
+        box-shadow: 0 0 30px 0 rgba(242, 223, 255, 0.486);
+    }
+}
+
 option {
     color: black;
     line-height: 30px;

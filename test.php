@@ -21,7 +21,11 @@ echo $tree->partnerNodes[0]->childrenNodes[0]->entity->displayName;
 echo $tree->partnerNodes[0]->childrenNodes[1]->entity->displayName;
 echo $tree->partnerNodes[0]->childrenNodes[2]->entity->displayName;
 echo $tree->partnerNodes[0]->childrenNodes[3]->entity->displayName;
+
+
+
+
 ?>
 <pre>
-<?= var_dump($tree)?>
+<?= var_dump($tree->GetStructuralGraph())?>
 </pre>

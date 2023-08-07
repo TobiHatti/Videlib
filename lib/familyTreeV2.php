@@ -94,7 +94,7 @@ class TreeNode {
             $sql->Close();
 
             // alternate positions for partners
-            $alternator = true;
+            $alternator = false;
             foreach($partnersRaw as $partnerRelation){
                 if($alternator) array_push($this->partnerNodes, new TreeRelation($this, $partnerRelation["CID"], $sql, $depth, $layer));
                 else array_push($this->partnerNodes, new TreeRelation($partnerRelation["CID"], $this, $sql, $depth, $layer));
@@ -127,6 +127,56 @@ class TreeNode {
             case 2: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], $parentArray[1]["CID"], $sql, $depth, $this->layer-1, $this)); break;
             case 1: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], null, $sql, $depth, $this->layer-1, $this)); break;
         }
+    }
+
+    public function GetStructuralGraph()
+    {
+        $graph = array();
+
+        array_push(TreeGraphLayer::GetLayer($graph, 0), $this->entity);
+        
+        foreach($this->parentNodes as $parentNode){
+            array_push(TreeGraphLayer::GetLayer($graph, -1), $parentNode->leftNode->entity);
+            array_push(TreeGraphLayer::GetLayer($graph, -1), $parentNode->rightNode->entity);
+        }
+        
+        foreach($this->partnerNodes as $partnerNode){
+            if($partnerNode->rightNode->entity->characterID == $this->entity->characterID)
+                array_push(TreeGraphLayer::GetLayer($graph, 0), $partnerNode->leftNode->entity);
+            else
+                array_unshift(TreeGraphLayer::GetLayer($graph, 0), $partnerNode->rightNode->entity);
+        }
+
+        foreach($this->partnerNodes as $partnerNode){
+            foreach($partnerNode->childrenNodes as $childNode){
+                array_push(TreeGraphLayer::GetLayer($graph, 1), $childNode->entity);
+            }
+        }
+    
+        usort($graph, function(TreeGraphLayer $a, TreeGraphLayer $b){
+            return strcmp($a->layer, $b->layer);
+        });
+        return $graph;
+    }
+
+}
+
+class TreeGraphLayer{
+    public int $layer;
+    public array $nodes;
+
+    public function __construct(int $layer){
+        $this->layer = $layer;
+        $this->nodes = array();
+    }
+
+    public static function &GetLayer(array &$graph, int $layer) {
+        foreach($graph as $glayer){
+            if($glayer->layer == $layer) return $glayer->nodes;
+        }
+        $newLayer = new TreeGraphLayer($layer);
+        array_push($graph, $newLayer);
+        return $newLayer->nodes;
     }
 }
 
@@ -176,5 +226,4 @@ class TreeRelation {
             else array_push($this->childrenNodes, new TreeNode($child["ChildID"], $sql, $depth - 1, $layer + 1 ));
         }
     } 
-
 }

@@ -41,6 +41,7 @@ main {
 h1, h2 {
   text-align: center;
   font-weight: lighter;
+  color: white;
 }
 
 .menuTileWrapper {
@@ -495,17 +496,13 @@ h1, h2 {
   width: 100%;
   height: 100%;
 }
-.characterInfo .familyTreeView .layerContainer .parentContainer,
-.characterInfo .familyTreeView .layerContainer .midContainer,
-.characterInfo .familyTreeView .layerContainer .childContainer {
+.characterInfo .familyTreeView .layerContainer .treeLayer {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 }
-.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode,
-.characterInfo .familyTreeView .layerContainer .midContainer .treeNode,
-.characterInfo .familyTreeView .layerContainer .childContainer .treeNode {
+.characterInfo .familyTreeView .layerContainer .treeLayer .treeNode {
   position: relative;
   width: 100px;
   height: 120px;
@@ -516,11 +513,12 @@ h1, h2 {
   align-items: center;
   margin: 30px 20px;
   transition: all 0.2s ease;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   cursor: pointer;
 }
-.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode .nodeImg,
-.characterInfo .familyTreeView .layerContainer .midContainer .treeNode .nodeImg,
-.characterInfo .familyTreeView .layerContainer .childContainer .treeNode .nodeImg {
+.characterInfo .familyTreeView .layerContainer .treeLayer .treeNode .nodeImg {
   width: 100%;
   height: 90px;
   margin: 0 auto;
@@ -529,23 +527,17 @@ h1, h2 {
   border-radius: 20px;
   box-sizing: border-box;
 }
-.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode .nodeImg img,
-.characterInfo .familyTreeView .layerContainer .midContainer .treeNode .nodeImg img,
-.characterInfo .familyTreeView .layerContainer .childContainer .treeNode .nodeImg img {
+.characterInfo .familyTreeView .layerContainer .treeLayer .treeNode .nodeImg img {
   max-height: 100%;
   width: 100%;
   -o-object-fit: cover;
      object-fit: cover;
 }
-.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode span,
-.characterInfo .familyTreeView .layerContainer .midContainer .treeNode span,
-.characterInfo .familyTreeView .layerContainer .childContainer .treeNode span {
+.characterInfo .familyTreeView .layerContainer .treeLayer .treeNode span {
   text-align: center;
   padding-top: 5px;
 }
-.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode svg.branch,
-.characterInfo .familyTreeView .layerContainer .midContainer .treeNode svg.branch,
-.characterInfo .familyTreeView .layerContainer .childContainer .treeNode svg.branch {
+.characterInfo .familyTreeView .layerContainer .treeLayer .treeNode svg.branch {
   position: absolute;
   width: 800px;
   height: 200px;
@@ -554,15 +546,11 @@ h1, h2 {
   z-index: -1;
   transition: all 0.2s ease;
 }
-.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode:hover,
-.characterInfo .familyTreeView .layerContainer .midContainer .treeNode:hover,
-.characterInfo .familyTreeView .layerContainer .childContainer .treeNode:hover {
+.characterInfo .familyTreeView .layerContainer .treeLayer .treeNode:hover {
   background-color: rgba(246, 223, 255, 0.5);
   box-shadow: 0 0 30px 0 rgba(242, 223, 255, 0.486);
 }
-.characterInfo .familyTreeView .layerContainer .parentContainer .treeNode:hover svg.branch,
-.characterInfo .familyTreeView .layerContainer .midContainer .treeNode:hover svg.branch,
-.characterInfo .familyTreeView .layerContainer .childContainer .treeNode:hover svg.branch {
+.characterInfo .familyTreeView .layerContainer .treeLayer .treeNode:hover svg.branch {
   z-index: -100;
 }
 .characterInfo .noteContainer {
@@ -696,4 +684,124 @@ h1, h2 {
 .ageList .tab:hover {
   background-color: rgba(246, 223, 255, 0.5);
   box-shadow: 0 0 30px 0 rgba(242, 223, 255, 0.486);
+}
+
+.modalWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.modalWrapper .modalBlur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(18, 0, 27, 0.6);
+}
+.modalWrapper .modal {
+  position: fixed;
+  background-color: rgba(225, 255, 225, 0.4);
+  background: radial-gradient(circle, rgba(225, 255, 225, 0.1) 0%, rgba(177, 224, 177, 0.3) 100%);
+  border: 1px solid white;
+  border-radius: 40px;
+  box-shadow: 0 0 20px -5px white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 300px;
+  min-height: 300px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modalWrapper .modal .modalContent {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+}
+.modalWrapper .modal .modalContent button {
+  width: 100%;
+}
+
+.modClose {
+  animation: modalFadeOut;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  opacity: 1;
+}
+
+.modOpen {
+  animation: modalFadeIn;
+  animation-duration: 0.4s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  opacity: 0;
+}
+
+.modContentFadeOut {
+  animation: modalContentFadeOut;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  opacity: 1;
+}
+
+.modContentFadeIn {
+  animation: modalContentFadeIn;
+  animation-duration: 0.4s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  opacity: 0;
+}
+
+@keyframes modalFadeOut {
+  0% {
+    opacity: 1;
+    -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+  }
+  100% {
+    opacity: 0;
+    -webkit-backdrop-filter: blur(0px);
+            backdrop-filter: blur(0px);
+  }
+}
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    -webkit-backdrop-filter: blur(0px);
+            backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+  }
+}
+@keyframes modalContentFadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes modalContentFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }/*# sourceMappingURL=layout.css.map */

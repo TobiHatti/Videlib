@@ -13,6 +13,7 @@ $characterID = $_GET['c'];
 $sql->Open();
 $cinfo;
 foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON characters.COwnerID = users.ID LEFT JOIN character_img ON characters.ID = character_img.CharacterID WHERE characters.ID = ? ORDER BY MainImg DESC LIMIT 1", $characterID) as $c) $cinfo = $c;
+$sql->Open();
 ?>
 
 <div class="contentWrapper">
@@ -32,11 +33,11 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
                 </label>
                 <input type="file" name="image" id="imgBtn" accept="image/*" hidden/>
                 </form>
-                <?php foreach($sql->ExecuteQuery("SELECT * FROM character_img WHERE CharacterID = ?", $characterID) as $img): ?>
+                <?php $sql->Open(); foreach($sql->ExecuteQuery("SELECT * FROM character_img WHERE CharacterID = ?", $characterID) as $img): ?>
                 <div class="carouselItem carouselImg">
                     <img src="<?= Img($img["FullresPath"]) ?>" />
                 </div>
-                <?php endforeach;?>
+                <?php endforeach; $sql->Close();?>
             </div>   
 
             <br><br>
@@ -45,24 +46,26 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
 
 
             <?php
-            $sql->Close();
-            $tree = FamilyTree::CreateTree($characterID);
-            $sql->Open();
+            $tree = FamilyTree::CreateTree($characterID, 1);
+            $graph = $tree->GetStructuralGraph();
             ?>
             <div class="familyTreeView">
                 <canvas id="canvas"></canvas>
                 <div class="layerContainer">
-                    <div class="parentContainer">
-                        <?php foreach($tree->parentNodes as $parent): ?>
-                        <div class="treeNode" d-chid="">
+
+                    <?php foreach($graph as $layer): ?>
+                    <div class="treeLayer">
+                        <?php foreach($layer->nodes as $node): ?>
+                        <div class="treeNode" d-chid="<?= $node->characterID ?>">
                             <div class="nodeImg">
-                                <img src="" />
+                                <img src="<?= Img($node->filepath, $node->name) ?>" />
                             </div>
-                            <span></span>
+                            <span class="nodeName"><?= $node->displayName ?></span>
                             <svg class="branch" viewbox="-250 -100 500 200"></svg>
                         </div>
                         <?php endforeach; ?>
                     </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
@@ -77,17 +80,15 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
                     </div>
                 </form>
 
-                <?php foreach($sql->ExecuteQuery("SELECT * FROM character_notes INNER JOIN users ON character_notes.UserID = users.ID WHERE CharacterID = ?", $characterID) as $note): ?>
-
+                <?php $sql->Open();foreach($sql->ExecuteQuery("SELECT * FROM character_notes INNER JOIN users ON character_notes.UserID = users.ID WHERE CharacterID = ?", $characterID) as $note): ?>
                 <div class="note">
                     <span class="user">By <?= $note["Username"] ?> on <?= date_format(date_create($note["CreatedDate"]), "M. d Y \a\\t h:i A") ?></span>
                     <p><?= nl2br($note["Note"]) ?></p>
                 </div>
-
-                <?php endforeach; ?>
+                <?php endforeach; $sql->Close(); ?>
             </div>
         </div>
     </div>
 </div>
 
-<?php $sql->Close(); ?>
+

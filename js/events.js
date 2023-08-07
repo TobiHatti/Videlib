@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/ages.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
+        url: `/page/characterinfo.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -67,8 +67,12 @@ function Bind(){
         SmoothPost(formData, "characternote", "characterinfo", "c", $("#cid").val());
     });
 
-    $(".treeNode").each(function(){
-        $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).attr("d-chid")));
+    $(".nodeImg").each(function(){
+        $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).closest(".treeNode").attr("d-chid")));
+    });
+
+    $(".nodeName").each(function(){
+        $(this).on("click", () => LoadModal("treeMenu", "c", $(this).closest(".treeNode").attr("d-chid")))
     });
 
     $("svg.branch").each(function(){
@@ -78,5 +82,24 @@ function Bind(){
     $(".tab").each(function(){
         $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).attr("d-chid")));
     });
+
+    $(".modalBlur").on("click", function() { $(".modalWrapper").removeClass("modOpen").addClass("modClose"); setTimeout(() => $(".modalWrapper").css("display", "none"), 200); })
+
+    $("#modBtnAddPartner").on("click", () => LoadModal("treeMenuPartner", "c", $("#modCID").val()));
+    $("#modBtnAddChild").on("click", () => LoadModal("treeMenuChildren", "c", $("#modCID").val()))
+    $("#modBtnAddChildWithExisting").on("click", () => LoadModal("treeMenuChildWithExisting", "c", $("#modCID").val()))
+    $("#modBtnAddExistingPartner").on("click", () => LoadModal("treeMenuPartnerWithExisting", "c", $("#modCID").val()))
+
+
+    $("#newExistingPartnerForm").on("submit", (event) => {
+        event.preventDefault();
+        let formData = new FormData($("#newExistingPartnerForm")[0]);
+        SmoothPost(formData, "addPartner", "characterinfo", "c", $("#cid").val(), function() {
+            $(".modalWrapper").removeClass("modOpen").addClass("modClose"); setTimeout(() => $(".modalWrapper").css("display", "none"), 200);
+        });
+    });
+
+
+    
 }
 
