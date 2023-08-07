@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterinfo.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
+        url: `/page/characterlist.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -89,17 +89,25 @@ function Bind(){
     $("#modBtnAddChild").on("click", () => LoadModal("treeMenuChildren", "c", $("#modCID").val()))
     $("#modBtnAddChildWithExisting").on("click", () => LoadModal("treeMenuChildWithExisting", "c", $("#modCID").val()))
     $("#modBtnAddExistingPartner").on("click", () => LoadModal("treeMenuPartnerWithExisting", "c", $("#modCID").val()))
-
+    
+    // p1 & p2 --> Add child of p1 & p2
+    $("#modBtnAddChildWithSuggestion").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=${$(this).attr("d-sid")}`)});
+    $("#modBtnAddChildWithNoPartner").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=00000000-0000-0000-0000-000000000000`)});
+    $("#newChildWithExistingPartnerForm").on("submit", (event) => {
+        event.preventDefault();
+        SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=${$("#existingCharacter").val()}`);
+    });
+    
+    // m --> Partner of m
+    $("#modBtnAddNewPartner").on("click", () => SmoothLoadPage("addcharacter", "m", $("#modCID").val()));
 
     $("#newExistingPartnerForm").on("submit", (event) => {
         event.preventDefault();
         let formData = new FormData($("#newExistingPartnerForm")[0]);
-        SmoothPost(formData, "addPartner", "characterinfo", "c", $("#cid").val(), function() {
-            $(".modalWrapper").removeClass("modOpen").addClass("modClose"); setTimeout(() => $(".modalWrapper").css("display", "none"), 200);
-        });
+        SmoothPost(formData, "addPartner", "characterinfo", "c", $("#cid").val());
     });
 
-
+    
     
 }
 

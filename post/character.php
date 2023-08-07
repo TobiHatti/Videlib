@@ -2,6 +2,7 @@
 require("../lib/connect.php");
 require("../lib/wrapsql.php");
 require("../lib/util.php");
+require("../lib/dbPresets.php");
 $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"));
 
 $status = 200;
@@ -22,22 +23,63 @@ try
         $_POST['birthdate']
     );
 
+    
+
+    // Add parent relations
     if(!empty($_POST['biomother'])) 
+    {
         $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
         GUID(), $characterID, $_POST['biomother'], "BiologicalMother");
+    }
 
     if(!empty($_POST['biofather'])) 
+    {
         $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
         GUID(), $characterID, $_POST['biofather'], "BiologicalFather");
+    }
 
+    // Add empty entry for missing parents
+    if(!empty($_POST['biomother']) && empty($_POST['biofather']))$sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,'00000000-0000-0000-0000-000000000000','BiologicalMother')", GUID(), $characterID);
+    if(empty($_POST['biomother']) && !empty($_POST['biofather'])) $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,'00000000-0000-0000-0000-000000000000','BiologicalFather')", GUID(), $characterID);
+    
+    
     if(!empty($_POST['adoptmother'])) 
+    {
         $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
         GUID(), $characterID, $_POST['adoptmother'], "AdoptedMother");
+    }
 
     if(!empty($_POST['adoptfather'])) 
+    {
         $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
         GUID(), $characterID, $_POST['adoptfather'], "AdoptedFather");
+    }
 
+    if(!empty($_POST['adoptmother']) && empty($_POST['adoptfather']))$sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,'00000000-0000-0000-0000-000000000000','AdoptedMother')", GUID(), $characterID);
+    if(empty($_POST['adoptmother']) && !empty($_POST['adoptfather'])) $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,'00000000-0000-0000-0000-000000000000','AdoptedFather')", GUID(), $characterID);
+    
+
+    $bioMotherID = $_POST['biomother'];
+    $bioFatherID = $_POST['biofather'];
+    $adoptMotherID = $_POST['adoptmother'];
+    $adoptFatherID = $_POST['adoptfather'];
+
+    if(!empty($bioMotherID) || !empty($bioFatherID)){
+        if(empty($bioMotherID)) $bioMotherID = "00000000-0000-0000-0000-000000000000";
+        if(empty($bioFatherID)) $bioFatherID = "00000000-0000-0000-0000-000000000000";
+        CreateOrUpdatePartnerRelation($sql, $bioMotherID, $bioFatherID,"Partner");
+    }
+
+    if(!empty($adoptMotherID) || !empty($adoptFatherID)){
+        if(empty($adoptMotherID)) $adoptMotherID = "00000000-0000-0000-0000-000000000000";
+        if(empty($adoptFatherID)) $adoptFatherID = "00000000-0000-0000-0000-000000000000";
+        CreateOrUpdatePartnerRelation($sql, $adoptMotherID, $adoptFatherID,"Partner");
+    }
+
+    if(isset($_POST["partner"]))
+    {
+        CreateOrUpdatePartnerRelation($sql, $characterID, $_POST["partner"],$_POST["relation"]);
+    }
 
     $sql->Close();
 

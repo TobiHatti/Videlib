@@ -13,6 +13,7 @@ function LoadPage(page, getKey = null, getValue = null){
 }
 
 function SmoothLoadPage(page, getKey = null, getValue = null){
+    $(".modalWrapper").removeClass("modOpen").addClass("modClose"); setTimeout(() => $(".modalWrapper").css("display", "none"), 200);
     $(".contentWrapper").addClass("fadeOut");
     setTimeout(function(){
         LoadPage(page,getKey,getValue);

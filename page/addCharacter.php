@@ -16,6 +16,24 @@ class Character{
     }
 }
 
+
+
+$maleParentPreset = "";
+$femaleParentPreset = "";
+if(isset($_GET["p1"]) && isset($_GET["p2"])){
+    $parent1ID = $_GET["p1"];
+    $parent2ID = $_GET["p2"];
+
+    if($sql->ExecuteScalar("SELECT Gender FROM characters WHERE ID = ?", $parent1ID) == "M"){
+        $maleParentPreset = $parent1ID;
+        $femaleParentPreset = $parent2ID;
+    }
+    else{
+        $maleParentPreset = $parent2ID;
+        $femaleParentPreset = $parent1ID;
+    }
+}
+
 $characters = array();
 foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID WHERE characters.PartyID = ? ORDER BY Name ASC", $_SESSION["VidePID"]) as $row)
     array_push($characters, new Character($row["CID"], $row["Name"]." (".$row["Symbol"].") [".$row["Species"]."]"));
@@ -37,8 +55,8 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                         <td>
                             <span>Owner</span>
                             <select name="owner">
-                            <?php foreach($sql->ExecuteQuery("SELECT * FROM users INNER JOIN party_users ON users.ID = party_users.UserID WHERE PartyID = ?",$_SESSION["VidePID"]) as $row): ?>
-                                <option value="<?= $row["ID"] ?>"><?= $row["Username"] ?></option>
+                            <?php foreach($sql->ExecuteQuery("SELECT *,users.ID AS UID FROM users INNER JOIN party_users ON users.ID = party_users.UserID WHERE PartyID = ?",$_SESSION["VidePID"]) as $row): ?>
+                                <option value="<?= $row["UID"] ?>"><?= $row["Username"] ?></option>
                             <?php endforeach; ?>
                             </select>
                         </td>
@@ -93,14 +111,60 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
             </div>
             <h2>Relations</h2>
             <table class="relationsSection">
+
+                <?php if(isset($_GET["m"])): ?>
+
+                <tr>
+                    <td>
+                        <span>Partner</span>
+                        <select name="partner">
+                            <?php foreach($characters as $row): ?>
+                                <?php if($row->value == $_GET["m"]): ?>
+                                <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Relationship</span>
+                        <select name="relation">
+                            <?php foreach($sql->ExecuteQuery("SELECT * FROM relation_types WHERE Subtype = 'Partner' ORDER BY relation_types.Weight DESC") as $row): ?>
+                                <option value="<?= $row["Type"] ?>"><?= $row["DisplayName"] ?></option>
+                            <?php endforeach; ?>
+                        
+                        </select>
+                    </td>
+                </tr>
+                <tr><td><br></td></tr>
+
+                <?php endif; ?>
+
+
                 <tr>
                     <td>
                         <span>Mother (Biological)</span>
                         <select name="biomother">
-                            <option value="" selected>---</option>
+                            <?php if(empty($femaleParentPreset)): ?>
+                            <option value="" selected>---</option>  
+                            <?php endif; ?> 
+                            
+                            <?php if($femaleParentPreset == "00000000-0000-0000-0000-000000000000"): ?>
+                            <option value="00000000-0000-0000-0000-000000000000">No Mother</option>  
+                            <?php endif; ?>
+
                             <?php foreach($characters as $row): ?>
-                                <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php if(!empty($femaleParentPreset)): ?>
+                                    <?php if($row->value == $femaleParentPreset): ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php endif; ?>
                             <?php endforeach; ?>
+                        
                         </select>
                     </td>
                 </tr>
@@ -108,9 +172,22 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                     <td>
                         <span>Father (Biological)</span>
                         <select name="biofather">
-                            <option value="" selected>---</option>
+                            <?php if(empty($femaleParentPreset)): ?>
+                            <option value="" selected>---</option>  
+                            <?php endif; ?>     
+
+                            <?php if($maleParentPreset == "00000000-0000-0000-0000-000000000000"): ?>
+                            <option value="00000000-0000-0000-0000-000000000000">No Father</option>  
+                            <?php endif; ?>
+
                             <?php foreach($characters as $row): ?>
-                                <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php if(!empty($maleParentPreset)): ?>
+                                    <?php if($row->value == $maleParentPreset): ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         </select>
                     </td>

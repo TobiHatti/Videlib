@@ -56,13 +56,15 @@ $sql->Open();
                     <?php foreach($graph as $layer): ?>
                     <div class="treeLayer">
                         <?php foreach($layer->nodes as $node): ?>
-                        <div class="treeNode" d-chid="<?= $node->characterID ?>">
-                            <div class="nodeImg">
-                                <img src="<?= Img($node->filepath, $node->name) ?>" />
+                            <?php if($node->characterID != "00000000-0000-0000-0000-000000000000"): ?>
+                            <div class="treeNode" d-chid="<?= $node->characterID ?>">
+                                <div class="nodeImg">
+                                    <img src="<?= Img($node->filepath, $node->name) ?>" />
+                                </div>
+                                <span class="nodeName"><?= $node->displayName ?></span>
+                                <svg class="branch" viewbox="-250 -100 500 200"></svg>
                             </div>
-                            <span class="nodeName"><?= $node->displayName ?></span>
-                            <svg class="branch" viewbox="-250 -100 500 200"></svg>
-                        </div>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </div>
                     <?php endforeach; ?>
