@@ -124,8 +124,8 @@ class TreeNode {
 
     private function InstanciateParentNode($parentArray, $parentType, $sql, $depth){
         switch(count($parentArray)){
-            case 2: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], $parentArray[1]["CID"], $sql, $depth, $this->layer-1, $this));
-            case 1: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], null, $sql, $depth, $this->layer-1, $this));
+            case 2: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], $parentArray[1]["CID"], $sql, $depth, $this->layer-1, $this)); break;
+            case 1: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], null, $sql, $depth, $this->layer-1, $this)); break;
         }
     }
 }

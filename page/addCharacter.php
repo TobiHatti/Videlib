@@ -17,11 +17,8 @@ class Character{
 }
 
 $characters = array();
-foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID ORDER BY Name ASC") as $row)
-{
+foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID WHERE characters.PartyID = ? ORDER BY Name ASC", $_SESSION["VidePID"]) as $row)
     array_push($characters, new Character($row["CID"], $row["Name"]." (".$row["Symbol"].") [".$row["Species"]."]"));
-}
-
 ?>
 
 <div class="contentWrapper">
@@ -40,7 +37,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                         <td>
                             <span>Owner</span>
                             <select name="owner">
-                            <?php foreach($sql->ExecuteQuery("SELECT * FROM users") as $row): ?>
+                            <?php foreach($sql->ExecuteQuery("SELECT * FROM users INNER JOIN party_users ON users.ID = party_users.UserID WHERE PartyID = ?",$_SESSION["VidePID"]) as $row): ?>
                                 <option value="<?= $row["ID"] ?>"><?= $row["Username"] ?></option>
                             <?php endforeach; ?>
                             </select>
@@ -67,7 +64,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                             <span>Species</span>
                             <input type="text" list="speciesList" name="species"/>
                             <datalist id="speciesList">
-                                <?php foreach($sql->ExecuteQuery("SELECT DISTINCT Species FROM characters") as $row): ?>
+                                <?php foreach($sql->ExecuteQuery("SELECT DISTINCT Species FROM characters WHERE PartyID = ?", $_SESSION["VidePID"]) as $row): ?>
                                     <option value="<?= $row["Species"] ?>"><?= $row["Species"] ?></option>
                                 <?php endforeach; ?>
 
@@ -78,6 +75,18 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                         <td>
                             <span>Birthdate</span>
                             <input type="date" name="birthdate"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>Multiplier</span>
+                            <input type="number" min="1" value="1" name="ageMultiplier" required/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>Offset (Days)</span>
+                            <input type="number" step="1" value="0" name="ageOffset" required/>
                         </td>
                     </tr>
                 </table>

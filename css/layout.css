@@ -689,9 +689,9 @@ h1, h2 {
   font-size: 0.9em;
 }
 .ageList .tab .ageBox {
-  font-size: 3em;
   padding-right: 10px;
   padding-top: 10px;
+  font-size: 3em;
 }
 .ageList .tab:hover {
   background-color: rgba(246, 223, 255, 0.5);

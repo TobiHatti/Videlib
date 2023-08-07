@@ -16,7 +16,7 @@ class AgeCalc{
             $accumulated = ($age - $lastAge) * $daysPerYear + $lastAccumulatedDays;
 
 
-            array_push(AgeCalc::$ages,new AgeEntry($age, $daysPerYear, $accumulated));
+            array_push(AgeCalc::$ages,new AgeEntry($age, $daysPerYear, $accumulated, $ageEntry["SectionName"]));
 
             $lastAge = $age;
             $lastAccumulatedDays = $accumulated;
@@ -24,7 +24,7 @@ class AgeCalc{
         $sql->Close();
     }
 
-    public static function GetFromDate(string $birthdate, int $ageMultiplier = 1, $ageOffset = 0)
+    public static function GetFromDate(string $birthdate, float $ageMultiplier = 1, $ageOffset = 0)
     {
         if($birthdate == "0000-00-00") return "?";
 
@@ -55,18 +55,29 @@ class AgeCalc{
         return -1;
     }
 
+    public static function GetDescriptor(string $birthdate, float $ageMultiplier = 1, $ageOffset = 0){
+        $age = AgeCalc::GetFromDate($birthdate, $ageMultiplier, $ageOffset);
+        $lastEntry = "";
+        foreach(AgeCalc::$ages as $ageEntry){
+            if($ageEntry->age > $age) return $ageEntry->name;
+
+        }
+    }
+
 }
 
 class AgeEntry{
     public int $age;
     public int $daysPerYear;
     public int $daysAtGivenAge;
+    public string $name;
 
-    public function __construct(string $age, string $daysPerYear, string $daysAtGivenAge)
+    public function __construct(string $age, string $daysPerYear, string $daysAtGivenAge, string $name)
     {
         $this->age = $age;
         $this->daysPerYear = $daysPerYear;
         $this->daysAtGivenAge = $daysAtGivenAge;
+        $this->name = $name;
     }
 }
 

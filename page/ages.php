@@ -9,7 +9,7 @@ AgeCalc::Init($_SESSION["VidePID"]);
 $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"),false);
 
 $characterID = $_GET['c'];
-
+$lastAgeDesc = "";
 $sql->Open();
 ?>
 
@@ -22,13 +22,19 @@ $sql->Open();
                 characters.ID = character_img.CharacterID AND character_img.MainImg = (SELECT MAX(MainImg) FROM character_img WHERE character_img.CharacterID = characters.ID)
             ) WHERE PartyID = ? AND Birthdate != '0000-00-00' ORDER BY characters.Birthdate ASC", $_SESSION["VidePID"]) as $row): ?>
 
+            <?php
+            $ageDesc = AgeCalc::GetDescriptor($row["Birthdate"], $row["AgeMultiplier"], $row["AgeOffset"]);
+            if($ageDesc != $lastAgeDesc) echo "<h2>".$ageDesc."</h2>";
+            $lastAgeDesc = $ageDesc;
+            ?>
+
             <div class="tab" d-chid="<?= $row["CID"] ?>">
                 <div class="imgContainer">
                     <img src="<?= Img($row["FullresPath"], $row["Name"]) ?>" />
                 </div>
                 <div class="textContainer">
                     <span class="main"><?= $row["Symbol"] ?> <?= $row["Name"] ?></span>
-                    <span class="sub"><?= $row["Birthdate"] ?> (Nx)</span>
+                    <span class="sub"><?= date_format(date_create($row["Birthdate"]), "M j, Y") ?> <?= $row["AgeMultiplier"] != 1 ? "(".$row["AgeMultiplier"]."x)" : "" ?></span>
                 </div>
                 <div class="ageBox">
                     <?= AgeCalc::GetFromDate($row["Birthdate"]) ?>

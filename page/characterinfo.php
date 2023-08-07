@@ -18,7 +18,7 @@ foreach($sql->ExecuteQuery("SELECT * FROM characters INNER JOIN users ON charact
 <div class="contentWrapper">
     <div class="contentContainer">
         <div class="characterInfo">
-            <h1><?= $cinfo["Symbol"] ?><?= $cinfo["Name"]?> (<?= AgeCalc::GetFromDate($cinfo["Birthdate"]) ?>)</h1>
+            <h1><?= $cinfo["Symbol"] ?><?= $cinfo["Name"]?> (<?= AgeCalc::GetFromDate($cinfo["Birthdate"], $cinfo["AgeMultiplier"], $cinfo["AgeOffset"]) ?>)</h1>
             <h2 class="species"><?= $cinfo["Species"]?></h2>
 
             <div class="mainImg">
