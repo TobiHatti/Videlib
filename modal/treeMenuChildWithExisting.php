@@ -15,5 +15,5 @@ $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), geten
     <?php endforeach; $sql->Close()?>
 </select>
 <br>
-<button>Add Child</button>
+<input type="submit" value="Add Child" />
 </form>

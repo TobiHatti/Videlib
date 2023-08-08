@@ -13,7 +13,7 @@ try
     $sql->Open();
     $sql->ExecuteNonQuery("INSERT INTO character_notes (ID, UserID, CharacterID, Note) VALUES (?,?,?,?)", 
         GUID(),
-        1,
+        $_SESSION["VideUID"],
         $_POST["character"],
         $_POST["note"]
     );

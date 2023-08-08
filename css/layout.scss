@@ -616,7 +616,7 @@ $tileSpacing: 20px;
                 border-radius: 20px;
             }
 
-            button{
+            input[type="submit"] {
                 height: 100px;
                 width: 80px;
                 border-radius: 20px;
@@ -677,7 +677,7 @@ $tileSpacing: 20px;
     }
 }
 .addCharacterSubmitBtn{
-    margin: 20px auto;
+    margin: 20px auto !important;
     display: block;
 }
 

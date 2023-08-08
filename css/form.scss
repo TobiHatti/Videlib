@@ -8,6 +8,7 @@ input[type="text"],
 input[type="date"],
 input[type="radio"],
 input[type="number"],
+input[type="submit"],
 select,
 textarea,
 button {
@@ -24,7 +25,9 @@ button {
     margin: 5px 10px;
 }
 
-button{
+button,
+input[type="submit"] {
+    position: relative;
     transition: 0.1s ease;
     cursor: pointer;
     &:hover{
@@ -32,14 +35,47 @@ button{
         box-shadow: 0 0 30px 0 rgba(242, 223, 255, 0.486);
     }
 
+    &::after{
+        content: "";
+        display: block;
+        background-image: url("/files/loader.webp");
+        background-size: 30px 30px;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        animation: buttonSpinner;
+        animation-duration: 0.8s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+
     &:disabled{
         background-color: transparent;
         color: gray;
         border: 1px solid gray;
+        cursor: default;
+        color: transparent;
         &:hover{
             background-color: transparent;
             box-shadow: none;
         }
+
+        &::after{
+            opacity: 1;
+        }
+    }
+}
+
+@keyframes buttonSpinner{
+    from{
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to{
+        transform: translate(-50%, -50%) rotate(359deg);
     }
 }
 

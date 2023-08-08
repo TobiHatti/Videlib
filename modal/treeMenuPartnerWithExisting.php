@@ -25,5 +25,5 @@ $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), geten
         <?php endforeach; $sql->Close(); ?>
     </select>
     <br><br>
-    <button style="width: 100px;">Save</button>
+    <input type="submit" value="Save" style="width: 100px;" />
 </form>

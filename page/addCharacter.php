@@ -284,7 +284,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                 </table>
             </details>
 
-            <button type="submit" class="addCharacterSubmitBtn">Save</button>
+            <input type="submit" class="addCharacterSubmitBtn" value="Save" />
         </form>
     </div>
 </div> 

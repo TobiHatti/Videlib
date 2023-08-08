@@ -571,7 +571,7 @@ h1, h2 {
   width: 100%;
   border-radius: 20px;
 }
-.characterInfo .noteContainer .newPostContainer button {
+.characterInfo .noteContainer .newPostContainer input[type=submit] {
   height: 100px;
   width: 80px;
   border-radius: 20px;
@@ -625,7 +625,7 @@ h1, h2 {
 }
 
 .addCharacterSubmitBtn {
-  margin: 20px auto;
+  margin: 20px auto !important;
   display: block;
 }
 

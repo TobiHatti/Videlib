@@ -34,6 +34,12 @@ function Bind(){
     //     new Accordion($(this)[0]);
     // });
 
+    $("button").each(function(){
+        $(this).on("click", function(){
+            $(this).attr("disabled", "disabled");
+        });
+    });
+
     $("#addCharacter").on("click", () => SmoothLoadPage("addCharacter"));
 
     $(".realCharacter").each(function(){
@@ -42,6 +48,8 @@ function Bind(){
 
     $("#addCharacterForm").on("submit", (event) => {
         event.preventDefault();
+        $(".addCharacterSubmitBtn").attr("disabled", "disabled");
+
         let formData = new FormData($("#addCharacterForm")[0]);
         formData.append('image', $("#imgBtn")[0].files[0])
         SmoothPost(formData, "character", "characterlist");
@@ -67,6 +75,8 @@ function Bind(){
 
     $("#addNoteForm").on("submit", (event) => {
         event.preventDefault();
+        $("#noteSubmitBtn").attr("disabled", "disabled");
+        
         let formData = new FormData($("#addNoteForm")[0]);
         SmoothPost(formData, "characternote", "characterinfo", "c", $("#cid").val());
     });

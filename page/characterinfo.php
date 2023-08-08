@@ -78,7 +78,7 @@ $sql->Open();
                     <div class="newPostContainer">
                     <textarea name="note" placeholder="Add note..." required></textarea>
                     <input type="hidden" value="<?= $characterID ?>" name="character"/>
-                    <button type="submit">Post</button>
+                    <input type="submit" value="Post" id="noteSubmitBtn"/>
                     </div>
                 </form>
 
