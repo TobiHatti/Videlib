@@ -14,7 +14,7 @@ $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), geten
 	SELECT relations.CB_ID AS CID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Partner' AND CA_ID = ?)", 
     $characterID, $characterID) as $partner): ?>
 
-<button id="modBtnAddChildWithSuggestion" d-sid="<?= $partner["CID"]?>">with <?= $partner["Symbol"]?> <?= $partner["Name"]?></button>
+<button class="modBtnAddChildWithSuggestion" d-sid="<?= $partner["CID"]?>">with <?= $partner["Symbol"]?> <?= $partner["Name"]?></button>
 
 <?php endforeach; ?>
 

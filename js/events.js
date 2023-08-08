@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/addCharacter.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
+        url: `/page/characterinfo.php?${Math.random()}&c=4893FA7B-1014-43ED-8628-C292B6A9CF9F`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -30,10 +30,6 @@ function BindMenu(){
 }
 
 function Bind(){
-    // $("details").each(function(){
-    //     new Accordion($(this)[0]);
-    // });
-
     $("button").each(function(){
         $(this).on("click", function(){
             $(this).attr("disabled", "disabled");
@@ -76,7 +72,7 @@ function Bind(){
     $("#addNoteForm").on("submit", (event) => {
         event.preventDefault();
         $("#noteSubmitBtn").attr("disabled", "disabled");
-        
+
         let formData = new FormData($("#addNoteForm")[0]);
         SmoothPost(formData, "characternote", "characterinfo", "c", $("#cid").val());
     });
@@ -105,7 +101,7 @@ function Bind(){
     $("#modBtnAddExistingPartner").on("click", () => LoadModal("treeMenuPartnerWithExisting", "c", $("#modCID").val()))
     
     // p1 & p2 --> Add child of p1 & p2
-    $("#modBtnAddChildWithSuggestion").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=${$(this).attr("d-sid")}`)});
+    $(".modBtnAddChildWithSuggestion").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=${$(this).attr("d-sid")}`)});
     $("#modBtnAddChildWithNoPartner").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=00000000-0000-0000-0000-000000000000`)});
     $("#newChildWithExistingPartnerForm").on("submit", (event) => {
         event.preventDefault();
@@ -113,6 +109,7 @@ function Bind(){
     });
 
     $("#modBtnAddSibling").on("click", () => LoadModal("treeMenuSiblings", "c", $("#modCID").val()));
+    $(".modBtnAddSiblingByParents").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$(this).attr("d-pida")}&p2=${$(this).attr("d-pidb")}`) } );
     
     // m --> Partner of m
     $("#modBtnAddNewPartner").on("click", () => SmoothLoadPage("addcharacter", "m", $("#modCID").val()));
