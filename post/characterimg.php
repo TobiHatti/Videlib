@@ -2,6 +2,7 @@
 require("../lib/connect.php");
 require("../lib/wrapsql.php");
 require("../lib/util.php");
+require("../lib/dbPresets.php");
 $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"));
 
 $status = 200;
@@ -11,25 +12,7 @@ $characterID = $_POST["character"];
 
 try
 {
-
-    if(file_exists($_FILES['image']['tmp_name']) || is_uploaded_file($_FILES['image']['tmp_name'])) {
-
-        $filename = GUID().'.'.pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $absolute_upload_directory = "/files/characterImg/".$filename; 
-        $relative_upload_directory = "..".$absolute_upload_directory;
-        if(!move_uploaded_file($_FILES['image']['tmp_name'], $relative_upload_directory)) $absolute_upload_directory = "";
-    
-        $sql->Open();
-
-        $mainImg = $sql->ExecuteScalar("SELECT COUNT(*) FROM character_img WHERE CharacterID = ?", $characterID) == 0;
-        $sql->ExecuteNonQuery("INSERT INTO character_img (ID, CharacterID, FullresPath, MainImg) VALUES (?,?,?,?)", 
-            GUID(),
-            $characterID,
-            $absolute_upload_directory,
-            $mainImg
-        );
-        $sql->Close();
-    }
+    FileUpload($sql, $_FILES['image'], $characterID);
 }
 catch(Exception $e) { $status = 500; }
 finally{ 

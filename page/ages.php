@@ -37,7 +37,7 @@ $sql->Open();
                     <span class="sub"><?= date_format(date_create($row["Birthdate"]), "M j, Y") ?> <?= $row["AgeMultiplier"] != 1 ? "(".$row["AgeMultiplier"]."x)" : "" ?></span>
                 </div>
                 <div class="ageBox">
-                    <?= AgeCalc::GetFromDate($row["Birthdate"]) ?>
+                    <?= AgeCalc::GetFromDate($row["Birthdate"], $row["AgeMultiplier"], $row["AgeOffset"]) ?>
                 </div>
             </div>
 

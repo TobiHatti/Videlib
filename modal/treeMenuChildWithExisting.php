@@ -8,8 +8,8 @@ $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), geten
 <h2>Add Child with</h2>
 <form id="newChildWithExistingPartnerForm">
 <input type="hidden" value="<?= $_GET["c"] ?>" id="modCID"/>
-<select id="existingCharacter">
-    <option selected disabled>Select Character</option>
+<select id="existingCharacter" required>
+    <option value="" selected disabled>Select Character</option>
     <?php $sql->Open(); foreach($sql->ExecuteQuery("SELECT *, characters.ID as CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID WHERE PartyID = ? AND characters.ID != ? ORDER BY characters.Name ASC", $_SESSION["VidePID"], $characterID) as $c): ?>
         <option value="<?= $c["CID"] ?>"><?= $c["Name"] ?> (<?= $c["Symbol"]?>)</option>
     <?php endforeach; $sql->Close()?>

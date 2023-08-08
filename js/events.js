@@ -99,6 +99,8 @@ function Bind(){
         event.preventDefault();
         SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=${$("#existingCharacter").val()}`);
     });
+
+    $("#modBtnAddSibling").on("click", () => LoadModal("treeMenuSiblings", "c", $("#modCID").val()));
     
     // m --> Partner of m
     $("#modBtnAddNewPartner").on("click", () => SmoothLoadPage("addcharacter", "m", $("#modCID").val()));

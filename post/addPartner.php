@@ -2,19 +2,16 @@
 require("../lib/connect.php");
 require("../lib/wrapsql.php");
 require("../lib/util.php");
+require("../lib/dbPresets.php");
 $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"));
 
 $status = 200;
 $statusMessage = "OK";
 
-$currentCharacter = $_POST["CID"];
-$otherCharacter = $_POST["partnerID"];
-$relationType = $_POST["relationType"];
-
 try
 {
     $sql->Open();
-    CreateOrUpdatePartnerRelation($sql, $currentCharacter, $otherCharacter,$relationType);
+    CreateOrUpdatePartnerRelation($sql, $_POST["CID"], $_POST["partnerID"], $_POST["relationType"]);
     $sql->Close();
 }
 catch(Exception $e) { $status = 500; }

@@ -46,6 +46,8 @@ class TreeNode {
 
         if($depth > 0)
         {
+            // TODO: Refactor:
+            // Rule: CA_ID is always child, CB_ID is always parent
             $sql->Open();
             $partnersRaw = $sql->ExecuteQuery("SELECT CA_ID AS CID, relations.RelationType AS RT FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CB_ID = ? AND SubType = 'Partner' UNION
             SELECT CB_ID AS CID, relations.RelationType AS RT FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CA_ID = ? AND SubType = 'Partner'", $characterID, $characterID);
@@ -159,6 +161,8 @@ class TreeNode {
         return $graph;
     }
 
+
+
 }
 
 class TreeGraphLayer{
@@ -204,6 +208,8 @@ class TreeRelation {
             $this->rightNode = new TreeNode("dummy", $sql, $depth - 1, $layer);
         }
 
+        // TODO: Refactor:
+        // Rule: CA_ID is always child, CB_ID is always parent
         $sql->Open();
             $childrenIDs = $sql->ExecuteQuery("SELECT CA_Rel.ChildID FROM (   
                 SELECT CB_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'relative' AND CA_ID = ? UNION
