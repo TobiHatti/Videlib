@@ -34,6 +34,7 @@ require("lib/wrapsql.php");
 	<link rel="stylesheet" href="/css/particles.css?1">
 	<link rel="stylesheet" href="/css/form.css?1">
 	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+	<script src="/js/accordion.js"></script>
 	<script src="/js/script.js"></script>
 </head>
 <body>

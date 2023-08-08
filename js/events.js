@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterlist.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
+        url: `/page/addCharacter.php?${Math.random()}&c=B219C811-F11B-479A-8F05-46B09BB87792`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -30,7 +30,9 @@ function BindMenu(){
 }
 
 function Bind(){
-    
+    // $("details").each(function(){
+    //     new Accordion($(this)[0]);
+    // });
 
     $("#addCharacter").on("click", () => SmoothLoadPage("addCharacter"));
 

@@ -681,6 +681,46 @@ $tileSpacing: 20px;
     display: block;
 }
 
+details.parentalRelations{
+    summary{
+        text-align: center;
+        text-decoration: none;
+        list-style: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        font-size: 1.1em;
+        margin: 10px 0;
+        user-select: none;
+        outline: none;
+        &::after{
+            content: "(click to expand)";
+            transition: all 0.5s ease;
+            overflow: hidden;
+            white-space: nowrap;
+            opacity: 1;
+            color: gray;
+            margin-left: 10px;
+        }
+
+        &:hover{
+            text-shadow: 0 0 10px rgb(242, 223, 255);
+        }
+    }   
+
+    &[open]{
+        summary{
+            
+            &::after{
+                content: "(click to expand)";
+                opacity: 0;
+                margin-left: -124px;
+                
+            }
+        }
+    }
+}
+
+
 
 .ageList{
     display: flex;

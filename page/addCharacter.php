@@ -142,80 +142,148 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
 
                 <?php endif; ?>
 
-
-                <tr>
-                    <td>
-                        <span>Mother (Biological)</span>
-                        <select name="biomother">
-                            <?php if(empty($femaleParentPreset)): ?>
-                            <option value="" selected>---</option>  
-                            <?php endif; ?> 
-                            
-                            <?php if($femaleParentPreset == "00000000-0000-0000-0000-000000000000"): ?>
-                            <option value="00000000-0000-0000-0000-000000000000">No Mother</option>  
-                            <?php endif; ?>
-
-                            <?php foreach($characters as $row): ?>
-                                <?php if(!empty($femaleParentPreset)): ?>
-                                    <?php if($row->value == $femaleParentPreset): ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
-                                    <?php endif; ?>
-                                <?php else: ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span>Father (Biological)</span>
-                        <select name="biofather">
-                            <?php if(empty($femaleParentPreset)): ?>
-                            <option value="" selected>---</option>  
-                            <?php endif; ?>     
-
-                            <?php if($maleParentPreset == "00000000-0000-0000-0000-000000000000"): ?>
-                            <option value="00000000-0000-0000-0000-000000000000">No Father</option>  
-                            <?php endif; ?>
-
-                            <?php foreach($characters as $row): ?>
-                                <?php if(!empty($maleParentPreset)): ?>
-                                    <?php if($row->value == $maleParentPreset): ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
-                                    <?php endif; ?>
-                                <?php else: ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                </tr>
-                <tr><td><br></td></tr>
-                <tr>
-                    <td>
-                        <span>Mother (Adopted)</span>
-                        <select name="adoptmother">
-                            <option value="" selected>---</option>
-                            <?php foreach($characters as $row): ?>
-                                <option value="<?= $row->value ?>"><?= $row->name ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span>Father (Adopted)</span>
-                        <select name="adoptfather">
-                            <option value="" selected>---</option>
-                            <?php foreach($characters as $row): ?>
-                                <option value="<?= $row->value ?>"><?= $row->name ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                </tr>
             </table>
+
+
+            <details class="parentalRelations" open>
+            <summary>Biological Parents</summary>
+                <table class="relationsSection">
+                    <tr>
+                        <td>
+                            <span>Mother (Biological)</span>
+                            <select name="biomother">
+                                <?php if(empty($femaleParentPreset)): ?>
+                                <option value="" selected>---</option>  
+                                <?php endif; ?> 
+                                
+                                <?php if($femaleParentPreset == "00000000-0000-0000-0000-000000000000"): ?>
+                                <option value="00000000-0000-0000-0000-000000000000">No Mother</option>  
+                                <?php endif; ?>
+
+                                <?php foreach($characters as $row): ?>
+                                    <?php if(!empty($femaleParentPreset)): ?>
+                                        <?php if($row->value == $femaleParentPreset): ?>
+                                        <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>Father (Biological)</span>
+                            <select name="biofather">
+                                <?php if(empty($femaleParentPreset)): ?>
+                                <option value="" selected>---</option>  
+                                <?php endif; ?>     
+
+                                <?php if($maleParentPreset == "00000000-0000-0000-0000-000000000000"): ?>
+                                <option value="00000000-0000-0000-0000-000000000000">No Father</option>  
+                                <?php endif; ?>
+
+                                <?php foreach($characters as $row): ?>
+                                    <?php if(!empty($maleParentPreset)): ?>
+                                        <?php if($row->value == $maleParentPreset): ?>
+                                        <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </details>
+
+            <details class="parentalRelations">
+            <summary>Adopted Parents</summary>
+                <table class="relationsSection">
+                    <tr>
+                        <td>
+                            <span>Mother (Adopted)</span>
+                            <select name="adoptmother">
+                                <option value="" selected>---</option>
+                                <?php foreach($characters as $row): ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>Father (Adopted)</span>
+                            <select name="adoptfather">
+                                <option value="" selected>---</option>
+                                <?php foreach($characters as $row): ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </details>
+
+            <details class="parentalRelations">
+            <summary>Step Parents</summary>
+                <table class="relationsSection">
+                    <tr>
+                        <td>
+                            <span>Mother (Step)</span>
+                            <select name="stepmother">
+                                <option value="" selected>---</option>
+                                <?php foreach($characters as $row): ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>Father (Step)</span>
+                            <select name="stepfather">
+                                <option value="" selected>---</option>
+                                <?php foreach($characters as $row): ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </details>
+
+            <details class="parentalRelations">
+            <summary>Foster Parents</summary>
+                <table class="relationsSection">
+                    <tr>
+                        <td>
+                            <span>Mother (Foster)</span>
+                            <select name="fostermother">
+                                <option value="" selected>---</option>
+                                <?php foreach($characters as $row): ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span>Father (Foster)</span>
+                            <select name="fosterfather">
+                                <option value="" selected>---</option>
+                                <?php foreach($characters as $row): ?>
+                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </details>
+
             <button type="submit" class="addCharacterSubmitBtn">Save</button>
         </form>
     </div>

@@ -27,7 +27,9 @@ try
 
     AddParentRelations($sql, $characterID, $_POST['biomother'], $_POST['biofather'], "BiologicalMother", "BiologicalFather");
     AddParentRelations($sql, $characterID, $_POST['adoptmother'], $_POST['adoptfather'], "AdoptedMother", "AdoptedFather");
-    
+    AddParentRelations($sql, $characterID, $_POST['stepmother'], $_POST['stepfather'], "StepMother", "StepFather");
+    AddParentRelations($sql, $characterID, $_POST['fostermother'], $_POST['fosterfather'], "FosterMother", "FosterFather");
+
     if(isset($_POST["partner"])) {
         CreateOrUpdatePartnerRelation($sql, $characterID, $_POST["partner"],$_POST["relation"]);
     }
