@@ -1,6 +1,7 @@
 <?php 
 require("lib/connect.php");
 require("lib/wrapsql.php");
+$revision = date('Y-m-d').rand();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,12 +32,12 @@ require("lib/wrapsql.php");
 	<title>Vide</title>
 	<link rel="icon" type="image/x-icon" href="/files/favicon.ico">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" href="/css/form.css?1">
-	<link rel="stylesheet" href="/css/layout.css?1">
-	<link rel="stylesheet" href="/css/particles.css?1">
+	<link rel="stylesheet" href="/css/form.css?<?= $revision ?>">
+	<link rel="stylesheet" href="/css/layout.css?<?= $revision ?>">
+	<link rel="stylesheet" href="/css/particles.css?<?= $revision ?>">
 	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-	<script src="/js/accordion.js"></script>
-	<script src="/js/script.js"></script>
+	<script src="/js/accordion.js<?= $revision ?>"></script>
+	<script src="/js/script.js<?= $revision ?>"></script>
 </head>
 <body>
 	<div id="particleContainer"></div>

@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterinfo.php?${Math.random()}&c=4893FA7B-1014-43ED-8628-C292B6A9CF9F`,
+        url: `/page/menu.php?${Math.random()}`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
