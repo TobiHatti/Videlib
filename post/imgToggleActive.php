@@ -11,7 +11,7 @@ $statusMessage = "OK";
 try
 {
     $sql->Open();
-    $sql->ExecuteNonQuery("UPDATE character_img SET character_img.`Active` = (SELECT NOT(character_img.`Active`) FROM character_img WHERE character_img.ID = ?) WHERE character_img.ID = ?", 
+    $sql->ExecuteNonQuery("UPDATE character_img SET character_img.`Active` = (SELECT * FROM (SELECT NOT(character_img.`Active`) FROM character_img WHERE character_img.ID = ?) AS x) WHERE character_img.ID = ?", 
         $_POST["iid"], $_POST["iid"]
     );
     $sql->Close();
