@@ -245,7 +245,6 @@ $tileSpacing: 20px;
     animation-duration: 1s;
     
     .contentContainer{
-
         position: relative;
         background-color: rgba(225,255,225,0.4);
         background: radial-gradient(circle, rgba(225,255,225,0.1) 0%, rgba(177,224,177,0.3) 100%);
@@ -461,22 +460,45 @@ $tileSpacing: 20px;
         color: gray;
     }
 
-    .mainImg{
-        border-radius: 30px;
-        margin: auto;
-        border: 1px solid white;
-        overflow: hidden;
-        max-height: 450px;
-        max-width: 350px;
+    .mainImgContainer{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        
+        $sidebarWidth: 80px;
+        .mainImg{
+            border-radius: 30px;
+            margin-left: $sidebarWidth;
+            border: 1px solid white;
+            overflow: hidden;
+            max-height: 450px;
+            max-width: 350px;
 
+            &:only-child{
+                margin-left: 0;
+            }
 
-        img{
-            max-height: 100%;
-            width: 100%;
-            object-fit: contain;
+            img{
+                max-height: 100%;
+                width: 100%;
+                object-fit: contain;
+            }
+        }
+
+        .operationsContainer{
+            display: flex;
+            flex-direction: column;
+            width: $sidebarWidth;
         }
     }
 
+    #imgDescription{
+        text-align: center;
+        display: block;
+        margin: 10px 0;
+        font-size: 1.1em;
+    }
  
     .imgCarousel{
         display: flex;
@@ -832,8 +854,20 @@ details.parentalRelations{
             width: 100%;
             text-align: center;
             
+            span{
+                color: white;
+            }
+
             button{
                 width: 100%;
+            }
+
+            textarea{
+                width: 250px;
+                height: 100px;
+                overflow: hidden;
+                border-radius: 20px;
+                resize: none;
             }
         }
     }
@@ -910,4 +944,12 @@ details.parentalRelations{
     100%{
         opacity: 1;
     }
+}
+
+.imgBlur{
+    filter: blur(20px);
+}
+
+.permaImgBlur{
+    filter: blur(20px);
 }

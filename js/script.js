@@ -13,7 +13,7 @@ function LoadPage(page, getKey = null, getValue = null){
 }
 
 function SmoothLoadPage(page, getKey = null, getValue = null){
-    $(".modalWrapper").removeClass("modOpen").addClass("modClose"); setTimeout(() => $(".modalWrapper").css("display", "none"), 200);
+    CloseModal();
     $(".contentWrapper").addClass("fadeOut");
     setTimeout(function(){
         LoadPage(page,getKey,getValue);
@@ -55,5 +55,17 @@ function LoadModal(page, getKey = null, getValue = null){
             }
         });
     }, 200);
-    
+}
+
+function CloseModal(){
+    $(".modalWrapper").removeClass("modOpen").addClass("modClose"); 
+    setTimeout(() => $(".modalWrapper").css("display", "none"), 200);
+}
+
+
+function b64DecodeUnicode(str) {
+    // Going backwards: from bytestream, to percent-encoding, to original string.
+    return decodeURIComponent(atob(str).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
 }

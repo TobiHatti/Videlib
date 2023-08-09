@@ -30,11 +30,19 @@ function BindMenu(){
 }
 
 function Bind(){
-    $("button").each(function(){
+    $("button:not([noLoad])").each(function(){
         $(this).on("click", function(){
             $(this).attr("disabled", "disabled");
         });
     });
+    
+    $(".imgBlur").each(function(){
+        $(this).on("click", function(){
+            $(this).removeClass("imgBlur");
+        });
+    });
+
+    $(".btnCloseModal").on("click", () => CloseModal());
 
     $("#addCharacter").on("click", () => SmoothLoadPage("addCharacter"));
 
@@ -42,7 +50,7 @@ function Bind(){
         $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).attr("d-chid")));
     });
 
-    $("#addCharacterForm").on("submit", (event) => {
+    $("#addCharacterForm").off().on("submit", (event) => {
         event.preventDefault();
         $(".addCharacterSubmitBtn").attr("disabled", "disabled");
 
@@ -57,7 +65,7 @@ function Bind(){
 
     $("#imgBtn").on("change", (event) => $("#addImageForm").submit());
 
-    $("#addImageForm").on("submit", (event) => {
+    $("#addImageForm").off().on("submit", (event) => {
         event.preventDefault();
         let formData = new FormData($("#addImageForm")[0]);
         formData.append('image', $("#imgBtn")[0].files[0])
@@ -66,10 +74,17 @@ function Bind(){
 
     $(".carouselImg").each(function(){
         let elem = $(this);
-        $(this).on("click", () => $("#mainImg").attr("src", elem.find("img").attr("src")));
+        $(this).on("click", function() {
+            $("#mainImg").attr("src", elem.find("img").attr("src"));
+            $("#modIID").val(elem.attr("d-iid"));
+            if(elem.attr("d-sens") == "true") $("#mainImg").addClass("imgBlur");
+            else $("#mainImg").removeClass("imgBlur");
+            $("#btnMarkSensitive").attr("d-sens", elem.attr("d-sens"));
+            $("#imgDescription").html(b64DecodeUnicode(elem.attr("d-idesc")));
+        });
     });
 
-    $("#addNoteForm").on("submit", (event) => {
+    $("#addNoteForm").off().on("submit", function (event) {
         event.preventDefault();
         $("#noteSubmitBtn").attr("disabled", "disabled");
 
@@ -93,7 +108,7 @@ function Bind(){
         $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).attr("d-chid")));
     });
 
-    $(".modalBlur").on("click", function() { $(".modalWrapper").removeClass("modOpen").addClass("modClose"); setTimeout(() => $(".modalWrapper").css("display", "none"), 200); })
+    $(".modalBlur").on("click", () => CloseModal());
 
     $("#modBtnAddPartner").on("click", () => LoadModal("treeMenuPartner", "c", $("#modCID").val()));
     $("#modBtnAddChild").on("click", () => LoadModal("treeMenuChildren", "c", $("#modCID").val()))
@@ -114,10 +129,48 @@ function Bind(){
     // m --> Partner of m
     $("#modBtnAddNewPartner").on("click", () => SmoothLoadPage("addcharacter", "m", $("#modCID").val()));
 
-    $("#newExistingPartnerForm").on("submit", (event) => {
+    $("#newExistingPartnerForm").off().on("submit", (event) => {
         event.preventDefault();
         let formData = new FormData($("#newExistingPartnerForm")[0]);
         SmoothPost(formData, "addPartner", "characterinfo", "c", $("#cid").val());
     });
+
+    $("#btnSetPrimaryImg").on("click", function() { LoadModal("imgPrimaryImg", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
+    $("#btnEditAltText").on("click", function() { LoadModal("imgAltText", "c", `${$("#cid").val()}&i=${$("#modIID").val()}&idesc=${$("#imgDescription").html()}`)});
+    $("#btnMarkSensitive").on("click", function() { LoadModal("imgMarkSensitive", "c", `${$("#cid").val()}&s=${$(this).attr("d-sens")}&i=${$("#modIID").val()}`)});
+    $("#btnDeleteImage").on("click", function() { LoadModal("imgDelete", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
+    $("#btnMoreActions").on("click", function() { LoadModal("imgMoreActions", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
+
+    $("#formToggleSensitivity").off().on("submit", (event) => {
+        event.preventDefault();
+        $("#btnToggleSensitive").attr("disabled", "disabled");
+        let formData = new FormData($("#formToggleSensitivity")[0]);
+        SmoothPost(formData, "imgToggleSensitive", "characterinfo", "c", $("#modCID").val());
+    });
+
+    $("#formHideImage").off().on("submit", (event) => {
+        event.preventDefault();
+        $("#btnHideImg").attr("disabled", "disabled");
+        let formData = new FormData($("#formHideImage")[0]);
+        SmoothPost(formData, "imgToggleActive", "characterinfo", "c", $("#modCID").val());
+    });
+
+    $("#formPrimaryImage").off().on("submit", (event) => {
+        event.preventDefault();
+        $("#btnSetPrimaryImg").attr("disabled", "disabled");
+        let formData = new FormData($("#formPrimaryImage")[0]);
+        SmoothPost(formData, "imgSetPrimary", "characterinfo", "c", $("#modCID").val());
+    });
+
+    $("#formAltText").off().on("submit", (event) => {
+        event.preventDefault();
+        $("#btnSaveAltText").attr("disabled", "disabled");
+        let formData = new FormData($("#formAltText")[0]);
+        SmoothPost(formData, "imgSaveAltText", "characterinfo", "c", $("#modCID").val());
+    });
+
+    $("#btnOpenHiddenImgBrowser").on("click", () => SmoothLoadPage("hiddenImgGallery", "c", $("#modCID").val()));
+    
+    
 }
 

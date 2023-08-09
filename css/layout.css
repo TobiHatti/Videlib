@@ -434,19 +434,39 @@ h1, h2 {
   margin-top: 4px;
   color: gray;
 }
-.characterInfo .mainImg {
+.characterInfo .mainImgContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.characterInfo .mainImgContainer .mainImg {
   border-radius: 30px;
-  margin: auto;
+  margin-left: 80px;
   border: 1px solid white;
   overflow: hidden;
   max-height: 450px;
   max-width: 350px;
 }
-.characterInfo .mainImg img {
+.characterInfo .mainImgContainer .mainImg:only-child {
+  margin-left: 0;
+}
+.characterInfo .mainImgContainer .mainImg img {
   max-height: 100%;
   width: 100%;
   -o-object-fit: contain;
      object-fit: contain;
+}
+.characterInfo .mainImgContainer .operationsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 80px;
+}
+.characterInfo #imgDescription {
+  text-align: center;
+  display: block;
+  margin: 10px 0;
+  font-size: 1.1em;
 }
 .characterInfo .imgCarousel {
   display: flex;
@@ -764,8 +784,18 @@ details.parentalRelations[open] summary::after {
   width: 100%;
   text-align: center;
 }
+.modalWrapper .modal .modalContent span {
+  color: white;
+}
 .modalWrapper .modal .modalContent button {
   width: 100%;
+}
+.modalWrapper .modal .modalContent textarea {
+  width: 250px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 20px;
+  resize: none;
 }
 
 .modClose {
@@ -839,4 +869,11 @@ details.parentalRelations[open] summary::after {
   100% {
     opacity: 1;
   }
+}
+.imgBlur {
+  filter: blur(20px);
+}
+
+.permaImgBlur {
+  filter: blur(20px);
 }/*# sourceMappingURL=layout.css.map */
