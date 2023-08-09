@@ -171,6 +171,24 @@ function Bind(){
 
     $("#btnOpenHiddenImgBrowser").on("click", () => SmoothLoadPage("hiddenImgGallery", "c", $("#modCID").val()));
     
+    $(".galleryItem").each(function(){
+        $(this).on("click",function(){
+            if(!$(this).find("img").hasClass("permaImgBlur")){
+                LoadModal("imgRestore", "c", `${$("#cid").val()}&i=${$(this).attr("d-iid")}`)
+            }
+            else {
+                $(this).find("img").removeClass("permaImgBlur");
+            }
+        });
+    });
+
+    $("#formDeleteImage").off().on("submit", (event) => {
+        event.preventDefault();
+        $("#btnDeleteImage").attr("disabled", "disabled");
+        let formData = new FormData($("#formDeleteImage")[0]);
+        SmoothPost(formData, "imgDelete", "characterinfo", "c", $("#modCID").val());
+    });
+    
     
 }
 

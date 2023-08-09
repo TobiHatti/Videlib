@@ -12,7 +12,10 @@ $characterID = $_GET['c'];
 
 $sql->Open();
 $cinfo;
-foreach($sql->ExecuteQuery("SELECT *, character_img.ID AS ImgID FROM characters INNER JOIN users ON characters.COwnerID = users.ID LEFT JOIN character_img ON characters.ID = character_img.CharacterID WHERE characters.ID = ? ORDER BY MainImg DESC LIMIT 1", $characterID) as $c) $cinfo = $c;
+foreach($sql->ExecuteQuery("SELECT *, character_img.ID AS ImgID FROM characters 
+    INNER JOIN users ON characters.COwnerID = users.ID 
+    LEFT JOIN character_img ON characters.ID = character_img.CharacterID AND character_img.Active = 1 
+    WHERE characters.ID = ?  ORDER BY MainImg DESC LIMIT 1", $characterID) as $c) $cinfo = $c;
 $sql->Open();
 ?>
 
@@ -33,10 +36,10 @@ $sql->Open();
                     <button noLoad id="btnEditAltText"><i class="fa-regular fa-pen-to-square"></i></button>
                     <button noLoad id="btnMarkSensitive" d-sens="<?= $cinfo["Sensitive"] ? "true" : "false" ?>" ><i class="fa-regular fa-eye-slash"></i></button>
                     <button noLoad id="btnDeleteImage"><i class="fa-regular fa-trash-can"></i></button>
-                    <button noLoad id="btnMoreActions"><i class="fa-solid fa-ellipsis"></i></button>
                 </div>
                 <?php endif; ?>
             </div>
+            <button noLoad id="btnMoreActions" style="display: block; margin: 10px auto;"><i class="fa-solid fa-ellipsis"></i></button>
             <span id="imgDescription"><?= $cinfo["ImgDescription"] ?></span>
             <div class="imgCarousel">
                 <form id="addImageForm" method="post" enctype="multipart/form-data" >

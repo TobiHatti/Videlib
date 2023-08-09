@@ -16,9 +16,16 @@ foreach($sql->ExecuteQuery("SELECT *, character_img.ID AS ImgID FROM characters 
 $sql->Open();
 ?>
 
-
 <div class="contentWrapper">
     <div class="contentContainer">
         <h1>Hidden images of <?= $cinfo["Symbol"] ?> <?= $cinfo["Name"]?></h1>
+        <input type="hidden" value="<?= $characterID ?>" name="character" id="cid"/>
+        <div class="imgGallery">
+            <?php $sql->Open(); foreach($sql->ExecuteQuery("SELECT * FROM character_img WHERE CharacterID = ? AND Active = 0 ORDER BY MainImg DESC", $characterID) as $img): ?>
+            <div class="galleryItem" d-sens="<?= $img["Sensitive"] ? "true" : "false" ?>" d-iid="<?= $img["ID"] ?>">
+                <img src="<?= Img($img["FullresPath"]) ?>" class="<?= $img["Sensitive"] ? "permaImgBlur" : "" ?>"/>
+            </div>
+            <?php endforeach; $sql->Close();?>
+        </div>
     </div>
 </div>  
