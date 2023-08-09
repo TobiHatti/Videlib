@@ -41,6 +41,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
 
 <div class="contentWrapper">
     <div class="contentContainer">
+    <div class="backBtn" d-page="characterlist" d-pk="" d-pv=""><i class="fa-solid fa-chevron-left"></i> Back</div>
         <form id="addCharacterForm" method="post" enctype="multipart/form-data" autocomplete="off">
             <h2>Personal</h2>
             <div class="personalSection">

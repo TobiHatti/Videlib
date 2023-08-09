@@ -18,6 +18,7 @@ $sql->Open();
 
 <div class="contentWrapper">
     <div class="contentContainer">
+        <div class="backBtn" d-page="characterinfo" d-pk="c" d-pv="<?= $characterID ?>"><i class="fa-solid fa-chevron-left"></i> Back</div>
         <h1>Hidden images of <?= $cinfo["Symbol"] ?> <?= $cinfo["Name"]?></h1>
         <input type="hidden" value="<?= $characterID ?>" name="character" id="cid"/>
         <div class="imgGallery">

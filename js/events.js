@@ -42,6 +42,12 @@ function Bind(){
         });
     });
 
+    $(".backBtn").each(function(){
+        $(this).on("click", function(){
+            SmoothLoadPage($(this).attr("d-page"), $(this).attr("d-pk"), $(this).attr("d-pv"))
+        });
+    });
+
     $(".btnCloseModal").on("click", () => CloseModal());
 
     $("#addCharacter").on("click", () => SmoothLoadPage("addCharacter"));

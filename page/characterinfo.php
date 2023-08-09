@@ -21,6 +21,7 @@ $sql->Open();
 
 <div class="contentWrapper">
     <div class="contentContainer">
+        <div class="backBtn" d-page="characterlist" d-pk="" d-pv=""><i class="fa-solid fa-chevron-left"></i> Back</div>
         <div class="characterInfo">
             <h1><?= $cinfo["Symbol"] ?><?= $cinfo["Name"]?> (<?= AgeCalc::GetFromDate($cinfo["Birthdate"], $cinfo["AgeMultiplier"], $cinfo["AgeOffset"]) ?>)</h1>
             <h2 class="species"><?= $cinfo["Species"]?></h2>
