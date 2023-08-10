@@ -46,53 +46,13 @@ class TreeNode {
 
         if($depth > 0)
         {
-            // TODO: Refactor:
-            // Rule: CA_ID is always child, CB_ID is always parent
             $sql->Open();
             $partnersRaw = $sql->ExecuteQuery("SELECT CA_ID AS CID, relations.RelationType AS RT FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CB_ID = ? AND SubType = 'Partner' UNION
             SELECT CB_ID AS CID, relations.RelationType AS RT FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CA_ID = ? AND SubType = 'Partner'", $characterID, $characterID);
-            $parentsRaw = $sql->ExecuteQuery("SELECT * FROM (
-                SELECT CB_ID AS CID, relation_types.`Type`AS RT, Weight, ParentalSubtype FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CA_ID = ? AND CB_ID NOT IN(
-                    SELECT * FROM 
-                    (
-                        SELECT CA_Rel.ChildID FROM (   
-                            SELECT CB_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CA_ID = ? UNION
-                            SELECT CA_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CB_ID = ? 
-                        ) AS CA_Rel INNER JOIN (
-                            SELECT CB_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CA_ID IN (
-                                SELECT CA_ID AS CID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CB_ID = ? AND SubType = 'Partner' UNION
-                                SELECT CB_ID AS CID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CA_ID = ? AND SubType = 'Partner'
-                             ) UNION
-                            SELECT CA_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CB_ID IN (
-                                SELECT CA_ID AS CID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CB_ID = ? AND SubType = 'Partner' UNION
-                                SELECT CB_ID AS CID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CA_ID = ? AND SubType = 'Partner'
-                             ) 
-                        ) AS CB_Rel
-                        ON CA_Rel.ChildID = CB_Rel.ChildID
-                    ) AS Children) 
-                UNION
-                SELECT CA_ID AS CID, relation_types.`Type` AS RT, Weight, ParentalSubtype FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CB_ID = ? AND CA_ID NOT IN (
-                    SELECT * FROM 
-                    (
-                        SELECT CA_Rel.ChildID FROM (   
-                            SELECT CB_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CA_ID = ? UNION
-                            SELECT CA_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CB_ID = ? 
-                        ) AS CA_Rel INNER JOIN (
-                            SELECT CB_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CA_ID IN (
-                                SELECT CA_ID AS CID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CB_ID = ? AND SubType = 'Partner' UNION
-                                SELECT CB_ID AS CID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CA_ID = ? AND SubType = 'Partner'
-                             ) UNION
-                                SELECT CA_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CB_ID IN (
-                                    SELECT CA_ID AS CID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CB_ID = ? AND SubType = 'Partner' UNION
-                                    SELECT CB_ID AS CID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CA_ID = ? AND SubType = 'Partner'
-                                 ) 
-                            ) AS CB_Rel
-                            ON CA_Rel.ChildID = CB_Rel.ChildID
-                        ) AS Children
-                    ) 
-                ) 
-                AS Parents ORDER BY Weight ASC", 
-                $characterID, $characterID, $characterID, $characterID, $characterID, $characterID, $characterID, $characterID, $characterID, $characterID, $characterID, $characterID, $characterID, $characterID);
+            
+            $parentsRaw = $sql->ExecuteQuery("SELECT CB_ID AS CID, relations.RelationType AS RT, relation_types.Weight, relation_types.ParentalSubtype 
+            FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` 
+            WHERE CA_ID = ? AND relation_types.SubType = 'Relative' ORDER BY Weight ASC", $characterID);
             $sql->Close();
 
             // alternate positions for partners
@@ -208,20 +168,13 @@ class TreeRelation {
             $this->rightNode = new TreeNode("dummy", $sql, $depth - 1, $layer);
         }
 
-        // TODO: Refactor:
-        // Rule: CA_ID is always child, CB_ID is always parent
         $sql->Open();
-            $childrenIDs = $sql->ExecuteQuery("SELECT CA_Rel.ChildID FROM (   
-                SELECT CB_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'relative' AND CA_ID = ? UNION
-                SELECT CA_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'relative' AND CB_ID = ? 
-            ) AS CA_Rel INNER JOIN (
-                SELECT CB_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'relative' AND CA_ID = ? UNION
-                SELECT CA_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'relative' AND CB_ID = ? 
-            ) AS CB_Rel
-            ON CA_Rel.ChildID = CB_Rel.ChildID",
+            $childrenIDs = $sql->ExecuteQuery("SELECT MotherSide.ChildID FROM (
+                SELECT CA_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CB_ID = ?) AS MotherSide
+                INNER JOIN (
+                SELECT CA_ID AS ChildID FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` WHERE relation_types.SubType = 'Relative' AND CB_ID = ?
+                ) AS FatherSide ON MotherSide.ChildID = FatherSide.ChildID",
             $this->leftNode->entity->characterID,
-            $this->leftNode->entity->characterID,
-            $this->rightNode->entity->characterID,
             $this->rightNode->entity->characterID,
         );
         $sql->Close();

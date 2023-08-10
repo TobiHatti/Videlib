@@ -1,6 +1,5 @@
 <?php
 
-
 function CreateOrUpdatePartnerRelation(WrapMySQL $sql, string $character1, string $character2, string $relationType){
     if($sql->ExecuteScalar("SELECT COUNT(*) FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE ((CA_ID = ? AND CB_ID = ?) OR (CA_ID = ? AND CB_ID = ?)) AND relation_types.Subtype = 'Partner'", 
         $character1, $character2, $character2, $character1) == 0)
