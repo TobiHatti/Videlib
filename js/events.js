@@ -2,7 +2,7 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterlist.php?${Math.random()}`,
+        url: `/page/characterinfo.php?${Math.random()}&c=3DBA97FB-F9D9-4B4C-8BCB-EA17B3D2889B`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); }
     });
 
@@ -107,7 +107,8 @@ function Bind(){
     });
 
     $("svg.branch").each(function(){
-        $(this).attr("viewbox", `-${$(this).width()/2} -${$(this).height()/2} ${$(this).width()} ${$(this).height()}`);
+        //$(this).attr("viewbox", `-${$(this).width()/2} -${$(this).height()/2} ${$(this).width()} ${$(this).height()}`);
+        $(this).attr("viewBox", `0 0 ${$(this).width()} ${$(this).height()}`);
     });
 
     $(".tab").each(function(){
@@ -198,5 +199,52 @@ function Bind(){
     });
     
     
+    SvgDrawTree();
+
 }
 
+$( window ).on( "resize", function() {
+    $("svg.branch").each(function(){
+        $(this).attr("viewBox", `0 0 ${$(this).width()} ${$(this).height()}`);
+        $(this).empty();
+        SvgDrawTree();
+    });
+  } );
+
+
+function SvgDrawTree(){
+    $(".treeNode").each(function(){
+        let elem = $(this)[0];
+        let parent = $(this).parent()[0];
+
+        // Top left of node
+        let x = elem.offsetLeft + parent.offsetLeft;
+        let y = elem.offsetTop + parent.offsetTop;
+
+
+        // Node Top
+        let x_top = x + elem.clientWidth/2;
+        let y_top = y;
+
+        // Node Bottom 
+        let x_bottom = x + elem.clientWidth/2;
+        let y_bottom = y + elem.clientHeight;
+
+        // Node left
+        let x_left = x;
+        let y_left = y + elem.clientHeight/2;
+
+        // Node right 
+        let x_right = x + elem.clientWidth;
+        let y_right = y + elem.clientHeight/2;
+
+
+        let svg = $(".branch")[0];
+
+        let newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
+        newElement.setAttribute("d",`M 0 0 L ${x_bottom} ${y_bottom}`); //Set path's data
+        newElement.style.stroke = "red"; //Set stroke colour
+        newElement.style.strokeWidth = "5px"; //Set stroke width
+        svg.appendChild(newElement);
+    });
+}

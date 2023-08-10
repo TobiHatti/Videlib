@@ -52,6 +52,7 @@ $sql->Close();
 
 
 <input type="hidden" value="<?= $_GET["c"] ?>" id="modCID"/>
+<button id="btnEditCharacter" noLoad>Edit Character</button>
 <button id="modBtnAddPartner">Add Partner</button>
 
 <?php if($ctr > 1): ?>

@@ -605,16 +605,21 @@ h1, h2 {
   width: 100%;
   position: relative;
 }
-.characterInfo .familyTreeView canvas {
+.characterInfo .familyTreeView svg.branch {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  transition: all 0.2s ease;
 }
 .characterInfo .familyTreeView .layerContainer {
   display: flex;
   flex-flow: column;
   width: 100%;
   height: 100%;
+  position: relative;
 }
 .characterInfo .familyTreeView .layerContainer .treeLayer {
   display: flex;
@@ -656,15 +661,6 @@ h1, h2 {
 .characterInfo .familyTreeView .layerContainer .treeLayer .treeNode span {
   text-align: center;
   padding-top: 5px;
-}
-.characterInfo .familyTreeView .layerContainer .treeLayer .treeNode svg.branch {
-  position: absolute;
-  width: 800px;
-  height: 200px;
-  left: -350px;
-  top: -40px;
-  z-index: -1;
-  transition: all 0.2s ease;
 }
 .characterInfo .familyTreeView .layerContainer .treeLayer .treeNode:hover {
   background-color: rgba(246, 223, 255, 0.5);

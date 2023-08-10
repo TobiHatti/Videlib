@@ -66,9 +66,10 @@ $sql->Open();
             $graph = $tree->GetStructuralGraph();
             ?>
             <div class="familyTreeView">
-                <canvas id="canvas"></canvas>
+                <svg class="branch" viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
+                </svg>
                 <div class="layerContainer">
-
+                    
                     <?php foreach($graph as $layer): ?>
                     <div class="treeLayer">
                         <?php foreach($layer->nodes as $node): ?>
@@ -78,7 +79,6 @@ $sql->Open();
                                     <img src="<?= Img($node->filepath, $node->name) ?>" />
                                 </div>
                                 <span class="nodeName"><?= $node->displayName ?></span>
-                                <svg class="branch" viewbox="-250 -100 500 200"></svg>
                             </div>
                             <?php endif; ?>
                         <?php endforeach; ?>
