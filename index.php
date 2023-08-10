@@ -36,8 +36,8 @@ $revision = date('Y-m-d').rand();
 	<link rel="stylesheet" href="/css/layout.css?<?= $revision ?>">
 	<link rel="stylesheet" href="/css/particles.css?<?= $revision ?>">
 	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-	<script src="/js/accordion.js<?= $revision ?>"></script>
-	<script src="/js/script.js<?= $revision ?>"></script>
+	<script src="/js/accordion.js?<?= $revision ?>"></script>
+	<script src="/js/script.js?<?= $revision ?>"></script>
 </head>
 <body>
 	<div id="particleContainer"></div>
@@ -51,6 +51,6 @@ $revision = date('Y-m-d').rand();
 			<div class="modalContent"></div>
 		</div>
 	</div> 
-	<script src="/js/events.js"></script>
+	<script src="/js/events.js?<?= $revision ?>"></script>
 </body>
 </html>

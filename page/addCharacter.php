@@ -17,6 +17,22 @@ class Character{
 }
 
 
+$edit = false;
+$echd = null;
+$relationExclusionID = "0";
+$eparr = array();
+if(isset($_GET["e"])){
+    $edit = true;
+    $relationExclusionID = $_GET["e"];
+    foreach($sql->ExecuteQuery("SELECT *, character_img.ID AS ImgID FROM characters 
+        INNER JOIN users ON characters.COwnerID = users.ID 
+        LEFT JOIN character_img ON characters.ID = character_img.CharacterID AND character_img.Active = 1 
+        WHERE characters.ID = ?  ORDER BY MainImg DESC LIMIT 1", $_GET["e"]) as $c) $echd = $c;
+
+    foreach($sql->ExecuteQuery("SELECT * FROM relations 
+        INNER JOIN relation_types ON relations.RelationType = relation_types.Type 
+        WHERE CA_ID = ? AND SubType = 'Relative'", $_GET["e"]) as $row) $eparr[$row["Type"]] = $row["CB_ID"];
+}
 
 $maleParentPreset = "";
 $femaleParentPreset = "";
@@ -35,7 +51,7 @@ if(isset($_GET["p1"]) && isset($_GET["p2"])){
 }
 
 $characters = array();
-foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID WHERE characters.PartyID = ? ORDER BY Name ASC", $_SESSION["VidePID"]) as $row)
+foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID WHERE characters.PartyID = ? AND characters.ID NOT IN (?) ORDER BY Name ASC", $_SESSION["VidePID"], $relationExclusionID) as $row)
     array_push($characters, new Character($row["CID"], $row["Name"]." (".$row["Symbol"].") [".$row["Species"]."]"));
 ?>
 
@@ -44,6 +60,11 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
     <div class="backBtn" d-page="characterlist" d-pk="" d-pv=""><i class="fa-solid fa-chevron-left"></i> Back</div>
         <form id="addCharacterForm" method="post" enctype="multipart/form-data" autocomplete="off">
             <h2>Personal</h2>
+
+            <?php if($edit): ?>
+            <input type="hidden" name="editID" value="<?= $_GET["e"] ?>" />
+            <?php endif; ?>
+
             <div class="personalSection">
                 <div class="imgUploadSection">
                     <label for="imgBtn" class="imgUploadBtn">
@@ -57,7 +78,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                             <span>Owner</span>
                             <select name="owner">
                             <?php foreach($sql->ExecuteQuery("SELECT *,users.ID AS UID FROM users INNER JOIN party_users ON users.ID = party_users.UserID WHERE PartyID = ?",$_SESSION["VidePID"]) as $row): ?>
-                                <option value="<?= $row["UID"] ?>"><?= $row["Username"] ?></option>
+                                <option value="<?= $row["UID"] ?>" <?= $edit && $row["UID"] == $echd["COwnerID"] ? "selected" : "" ?>><?= $row["Username"] ?></option>
                             <?php endforeach; ?>
                             </select>
                         </td>
@@ -65,23 +86,23 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                     <tr>
                         <td>
                             <span>Name</span>
-                            <input type="text" name="name" required/>
+                            <input type="text" name="name" required value="<?= $edit ? $echd["Name"] : "" ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <span>Gender</span>
                             <div style="margin: 5px 0;">
-                                <input type="radio" value="F" name="gender" required/> Female
-                                <input type="radio" value="M" name="gender" required/> Male
-                                <input type="radio" value="X" name="gender" required/> Other
+                                <input type="radio" value="F" name="gender" required <?= $edit && "F" == $echd["Gender"] ? "checked" : "" ?>/> Female
+                                <input type="radio" value="M" name="gender" required <?= $edit && "M" == $echd["Gender"] ? "checked" : "" ?>/> Male
+                                <input type="radio" value="X" name="gender" required <?= $edit && "X" == $echd["Gender"] ? "checked" : "" ?>/> Other
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <span>Species</span>
-                            <input type="text" list="speciesList" name="species"/>
+                            <input type="text" list="speciesList" name="species" value="<?= $edit ? $echd["Species"] : "" ?>"/>
                             <datalist id="speciesList">
                                 <?php foreach($sql->ExecuteQuery("SELECT DISTINCT Species FROM characters WHERE PartyID = ?", $_SESSION["VidePID"]) as $row): ?>
                                     <option value="<?= $row["Species"] ?>"><?= $row["Species"] ?></option>
@@ -93,19 +114,19 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                     <tr>
                         <td>
                             <span>Birthdate</span>
-                            <input type="date" name="birthdate"/>
+                            <input type="date" name="birthdate" value="<?= $edit ? $echd["Birthdate"] : "" ?>"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <span>Multiplier</span>
-                            <input type="number" min="1" value="1" name="ageMultiplier" required/>
+                            <input type="number" min="1" value="<?= $edit ? $echd["AgeMultiplier"] : "1" ?>" name="ageMultiplier" required />
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <span>Offset (Days)</span>
-                            <input type="number" step="1" value="0" name="ageOffset" required/>
+                            <input type="number" step="1" value="<?= $edit ? $echd["AgeOffset"] : "0" ?>" name="ageOffset" required/>
                         </td>
                     </tr>
                 </table>
@@ -167,7 +188,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                                         <option value="<?= $row->value ?>"><?= $row->name ?></option>
                                         <?php endif; ?>
                                     <?php else: ?>
-                                        <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                        <option value="<?= $row->value ?>" <?= $edit && isset($eparr["BiologicalMother"]) && $row->value == $eparr["BiologicalMother"] ? "selected" : "" ?> ><?= $row->name ?></option>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             
@@ -192,7 +213,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                                         <option value="<?= $row->value ?>"><?= $row->name ?></option>
                                         <?php endif; ?>
                                     <?php else: ?>
-                                        <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                        <option value="<?= $row->value ?>" <?= $edit && isset($eparr["BiologicalFather"]) && $row->value == $eparr["BiologicalFather"] ? "selected" : "" ?> ><?= $row->name ?></option>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </select>
@@ -210,7 +231,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                             <select name="adoptmother">
                                 <option value="" selected>---</option>
                                 <?php foreach($characters as $row): ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <option value="<?= $row->value ?>" <?= $edit && isset($eparr["AdoptedMother"]) && $row->value == $eparr["AdoptedMother"] ? "selected" : "" ?> ><?= $row->name ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -221,7 +242,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                             <select name="adoptfather">
                                 <option value="" selected>---</option>
                                 <?php foreach($characters as $row): ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <option value="<?= $row->value ?>" <?= $edit && isset($eparr["AdoptedFather"]) && $row->value == $eparr["AdoptedFather"] ? "selected" : "" ?> ><?= $row->name ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -238,7 +259,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                             <select name="stepmother">
                                 <option value="" selected>---</option>
                                 <?php foreach($characters as $row): ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <option value="<?= $row->value ?>" <?= $edit && isset($eparr["StepMother"]) && $row->value == $eparr["StepMother"] ? "selected" : "" ?> ><?= $row->name ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -249,7 +270,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                             <select name="stepfather">
                                 <option value="" selected>---</option>
                                 <?php foreach($characters as $row): ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <option value="<?= $row->value ?>" <?= $edit && isset($eparr["StepFather"]) && $row->value == $eparr["StepFather"] ? "selected" : "" ?> ><?= $row->name ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -266,7 +287,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                             <select name="fostermother">
                                 <option value="" selected>---</option>
                                 <?php foreach($characters as $row): ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <option value="<?= $row->value ?>" <?= $edit && isset($eparr["FosterMother"]) && $row->value == $eparr["FosterMother"] ? "selected" : "" ?> ><?= $row->name ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -277,7 +298,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                             <select name="fosterfather">
                                 <option value="" selected>---</option>
                                 <?php foreach($characters as $row): ?>
-                                    <option value="<?= $row->value ?>"><?= $row->name ?></option>
+                                    <option value="<?= $row->value ?>" <?= $edit && isset($eparr["FosterFather"]) && $row->value == $eparr["FosterFather"] ? "selected" : "" ?> ><?= $row->name ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -285,7 +306,11 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                 </table>
             </details>
 
+            <?php if($edit): ?>
+            <input type="submit" class="addCharacterSubmitBtn" value="Update" />
+            <?php else: ?>
             <input type="submit" class="addCharacterSubmitBtn" value="Save" />
+            <?php endif; ?>
         </form>
     </div>
 </div> 

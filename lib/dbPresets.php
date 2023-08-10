@@ -21,26 +21,34 @@ function CreateOrUpdatePartnerRelation(WrapMySQL $sql, string $character1, strin
         }
 }
 
-function AddParentRelations(WrapMySQL $sql, string $childID, string $motherID, string $fatherID, string $motherType, string $fatherType){
+function AddParentRelations(WrapMySQL $sql, string $childID, string $motherID, string $fatherID, string $motherType, string $fatherType, $edit = false){
     
     // CA_ID = CHILD
     // CB_ID = PARENT
+    $motherRelationID = GUID();
+    $fatherRelationID = GUID();
+    
+    if($edit){
+        $motherRelationID = $sql->ExecuteScalar("SELECT ID FROM relations WHERE CA_ID = ? AND RelationType = ?", $childID, $motherType);
+        $fatherRelationID = $sql->ExecuteScalar("SELECT ID FROM relations WHERE CA_ID = ? AND RelationType = ?", $childID, $fatherType);
+    }
+
 
     // Mother Relations
     if(!empty($motherID)) {
-        $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
-        GUID(), $childID, $motherID, $motherType);
+        $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE CB_ID = VALUES(CB_ID)", 
+        $motherRelationID, $childID, $motherID, $motherType);
     }
 
     // Father Relation
     if(!empty($fatherID)) {
-        $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?)", 
-        GUID(), $childID, $fatherID, $fatherType);
+        $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE CB_ID = VALUES(CB_ID)", 
+        $fatherRelationID, $childID, $fatherID, $fatherType);
     }
 
     // Fill Missing Parent
-    if(!empty($motherID) && empty($fatherID))$sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,'00000000-0000-0000-0000-000000000000',?)", GUID(), $childID, $motherType);
-    if(empty($motherID) && !empty($fatherID)) $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,'00000000-0000-0000-0000-000000000000',?)", GUID(), $childID, $fatherType);
+    if(!empty($motherID) && empty($fatherID))$sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,'00000000-0000-0000-0000-000000000000',?) ON DUPLICATE KEY UPDATE CB_ID = VALUES(CB_ID)", $fatherRelationID, $childID, $fatherType);
+    if(empty($motherID) && !empty($fatherID)) $sql->ExecuteNonQuery("INSERT INTO relations (ID, CA_ID, CB_ID, RelationType) VALUES (?,?,'00000000-0000-0000-0000-000000000000',?) ON DUPLICATE KEY UPDATE CB_ID = VALUES(CB_ID)", $motherRelationID, $childID, $motherType);
     
     // Partner Parents
     if(!empty($motherID) || !empty($fatherID)){

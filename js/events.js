@@ -145,7 +145,9 @@ function Bind(){
     $("#btnEditAltText").on("click", function() { LoadModal("imgAltText", "c", `${$("#cid").val()}&i=${$("#modIID").val()}&idesc=${$("#imgDescription").html()}`)});
     $("#btnMarkSensitive").on("click", function() { LoadModal("imgMarkSensitive", "c", `${$("#cid").val()}&s=${$(this).attr("d-sens")}&i=${$("#modIID").val()}`)});
     $("#btnDeleteImage").on("click", function() { LoadModal("imgDelete", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
-    $("#btnMoreActions").on("click", function() { LoadModal("imgMoreActions", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
+    $("#btnMoreActions").on("click", function() { LoadModal("charMoreActions", "c", `${$("#cid").val()}`)});
+    $("#btnEditCharacter").on("click", function() { SmoothLoadPage("addCharacter", "e", `${$("#cid").val()}`)});
+
 
     $("#formToggleSensitivity").off().on("submit", (event) => {
         event.preventDefault();
