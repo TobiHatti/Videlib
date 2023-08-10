@@ -406,6 +406,17 @@ $tileSpacing: 20px;
     }
 }
 
+@keyframes boxFlyIn {
+    from{
+        transform: scale(1.3) rotate(-10deg);
+        opacity: 0;
+    }
+    to{
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
 .characterBoxContainer{
     display: flex;
     flex-direction: row;
@@ -429,6 +440,12 @@ $tileSpacing: 20px;
         padding-top: 10px;
         overflow: hidden;
         cursor: pointer;
+
+        animation: boxFlyIn;
+        animation-duration: 0.3s;
+        animation-delay: var(--fdelay);
+        animation-fill-mode: backwards;
+
         &:first-of-type{
             font-size: 10em;
             line-height: 190px;
