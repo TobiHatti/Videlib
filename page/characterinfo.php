@@ -80,7 +80,7 @@ $sql->Open();
                                 d-lbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Left) ?>"  
                                 d-rbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Right) ?>">
                                 <div class="nodeImg">
-                                    <img src="<?= Img($node->entity->filepath, $node->entity->name) ?>" />
+                                    <!-- <img src="<?= Img($node->entity->filepath, $node->entity->name) ?>" /> -->
                                 </div>
                                 <span class="nodeName"><?= $node->entity->displayName ?></span>
                             </div>

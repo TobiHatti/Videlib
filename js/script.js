@@ -29,8 +29,9 @@ function SmoothPost(data, postPage, redirectPage, getKey = null, getValue = null
         processData: false,
         contentType: false,
         encode: true,
-        success: () => 
+        success: (response) => 
         {
+            console.log(response); 
             if(callback != null) callback();
             if(redirectPage != null) SmoothLoadPage(redirectPage, getKey, getValue)
         },

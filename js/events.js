@@ -1,8 +1,6 @@
-
-
 $(document).ready(() => {
     $.get({
-        url: `/page/characterinfo.php?${Math.random()}&c=6D7967C0-4F2E-499D-8DB3-A7F30E7F8D7F`,
+        url: `/page/characterinfo.php?${Math.random()}&c=8CF31BD6-0301-4267-94C4-D4DC7C8D566E`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); BindUniversal(); }
     });
 
@@ -131,6 +129,12 @@ function Bind(){
         });
     });
 
+    $("#btnMoreActions").on("click", function() { LoadModal("charMoreActions", "c", `${$("#cid").val()}`)});
+    $("#btnSetPrimaryImg").on("click", function() { LoadModal("imgPrimaryImg", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
+    $("#btnEditAltText").on("click", function() { LoadModal("imgAltText", "c", `${$("#cid").val()}&i=${$("#modIID").val()}&idesc=${$("#imgDescription").html()}`)});
+    $("#btnMarkSensitive").on("click", function() { LoadModal("imgMarkSensitive", "c", `${$("#cid").val()}&s=${$(this).attr("d-sens")}&i=${$("#modIID").val()}`)});
+    $("#btnDeleteImage").on("click", function() { LoadModal("imgDelete", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
+
     DrawSvgBranches();
 }
 
@@ -142,18 +146,18 @@ function ModalBind(){
     $("#btnEditRelations").on("click", () => LoadModal("treeMenuPartners", "c", $("#modCID").val()));
     
     // p1 & p2 --> Add child of p1 & p2
-    $(".modBtnAddChildWithSuggestion").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=${$(this).attr("d-sid")}`)});
-    $("#modBtnAddChildWithNoPartner").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=00000000-0000-0000-0000-000000000000`)});
+    $(".modBtnAddChildWithSuggestion").on("click", function() { SmoothLoadPage("addCharacter", "p1", `${$("#modCID").val()}&p2=${$(this).attr("d-sid")}`)});
+    $("#modBtnAddChildWithNoPartner").on("click", function() { SmoothLoadPage("addCharacter", "p1", `${$("#modCID").val()}&p2=00000000-0000-0000-0000-000000000000`)});
     $("#newChildWithExistingPartnerForm").on("submit", (event) => {
         event.preventDefault();
-        SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=${$("#existingCharacter").val()}`);
+        SmoothLoadPage("addCharacter", "p1", `${$("#modCID").val()}&p2=${$("#existingCharacter").val()}`);
     });
 
     $("#modBtnAddSibling").on("click", () => LoadModal("treeMenuSiblings", "c", $("#modCID").val()));
-    $(".modBtnAddSiblingByParents").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$(this).attr("d-pida")}&p2=${$(this).attr("d-pidb")}`) } );
+    $(".modBtnAddSiblingByParents").on("click", function() { SmoothLoadPage("addCharacter", "p1", `${$(this).attr("d-pida")}&p2=${$(this).attr("d-pidb")}`) } );
     
     // m --> Partner of m
-    $("#modBtnAddNewPartner").on("click", () => SmoothLoadPage("addcharacter", "m", $("#modCID").val()));
+    $("#modBtnAddNewPartner").on("click", () => SmoothLoadPage("addCharacter", "m", $("#modCID").val()));
 
     $("#newExistingPartnerForm").off().on("submit", (event) => {
         event.preventDefault();
@@ -161,11 +165,8 @@ function ModalBind(){
         SmoothPost(formData, "addPartner", "characterinfo", "c", $("#cid").val());
     });
 
-    $("#btnSetPrimaryImg").on("click", function() { LoadModal("imgPrimaryImg", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
-    $("#btnEditAltText").on("click", function() { LoadModal("imgAltText", "c", `${$("#cid").val()}&i=${$("#modIID").val()}&idesc=${$("#imgDescription").html()}`)});
-    $("#btnMarkSensitive").on("click", function() { LoadModal("imgMarkSensitive", "c", `${$("#cid").val()}&s=${$(this).attr("d-sens")}&i=${$("#modIID").val()}`)});
-    $("#btnDeleteImage").on("click", function() { LoadModal("imgDelete", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
-    $("#btnMoreActions").on("click", function() { LoadModal("charMoreActions", "c", `${$("#cid").val()}`)});
+    
+    
     $("#btnEditCharacter").on("click", function() { SmoothLoadPage("addCharacter", "e", `${$("#cid").val()}`)});
     
 

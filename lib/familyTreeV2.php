@@ -58,9 +58,13 @@ class TreeNode {
             // alternate positions for partners
             $alternator = false;
             foreach($partnersRaw as $partnerRelation){
-                if($alternator) array_push($this->partnerNodes, new TreeRelation($this, $partnerRelation["CID"], $sql, $depth, $layer, $partnerRelation["RelationColor"]));
-                else array_push($this->partnerNodes, new TreeRelation($partnerRelation["CID"], $this, $sql, $depth, $layer, $partnerRelation["RelationColor"]));
-                $alternator != $alternator;
+                if($alternator){
+                    array_push($this->partnerNodes, new TreeRelation($this, $partnerRelation["CID"], $sql, $depth, $layer, $partnerRelation["RelationColor"]));
+                } 
+                else { 
+                    array_push($this->partnerNodes, new TreeRelation($partnerRelation["CID"], $this, $sql, $depth, $layer, $partnerRelation["RelationColor"]));
+                }
+                $alternator = !$alternator;
             }
 
             // Split up types of parents
@@ -103,10 +107,12 @@ class TreeNode {
         }
         
         foreach($this->partnerNodes as $partnerNode){
-            if($partnerNode->rightNode->entity->characterID == $this->entity->characterID)
+            if($partnerNode->rightNode->entity->characterID == $this->entity->characterID){
                 array_push(TreeGraphLayer::GetLayer($graph, 0), new TreeGraphNode($partnerNode->leftNode));
-            else
+            }
+            else{
                 array_unshift(TreeGraphLayer::GetLayer($graph, 0), new TreeGraphNode($partnerNode->rightNode));
+            }
         }
 
         foreach($this->partnerNodes as $partnerNode){
@@ -198,10 +204,12 @@ class TreeGraphNode{
         }
 
         foreach($callingNode->partnerNodes as $partner){
-            if($partner->rightNode->entity->characterID == $callingNode->entity->characterID)
+            if($partner->rightNode->entity->characterID == $callingNode->entity->characterID) {
                 array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Right, $partner->leftNode->entity->characterID, ConnectionPoints::Left,  $partner->nodeColor));
-            else
+            }
+            else{
                 array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Left, $partner->rightNode->entity->characterID, ConnectionPoints::Right, $partner->nodeColor));
+            }
         }
 
         foreach($callingNode->partnerNodes as $partnerNode){

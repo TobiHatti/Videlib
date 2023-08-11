@@ -15,8 +15,8 @@ if(isset($_POST["editID"])) {
     $edit = true;
 }
 
-try
-{
+// try
+// {
     $sql->Open();
 
     $sql->ExecuteNonQuery("INSERT INTO characters 
@@ -53,10 +53,10 @@ try
     $sql->Close();
 
     FileUpload($sql, $_FILES['image'], $characterID, true);
-}
-catch(Exception $e) { $status = 500;  }
-finally{ 
-    $sql->Close(); 
-}
+// }
+// catch(Exception $e) { $status = 500;  }
+// finally{ 
+//     $sql->Close(); 
+// }
 
 echo(http_response_code($status));
