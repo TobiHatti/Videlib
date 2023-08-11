@@ -2,19 +2,43 @@
 
 $(document).ready(() => {
     $.get({
-        url: `/page/characterinfo.php?${Math.random()}&c=3DBA97FB-F9D9-4B4C-8BCB-EA17B3D2889B`,
-        success: (response) => { $("main").html(response); BindMenu(); Bind(); }
+        url: `/page/characterinfo.php?${Math.random()}&c=6D7967C0-4F2E-499D-8DB3-A7F30E7F8D7F`,
+        success: (response) => { $("main").html(response); BindMenu(); Bind(); BindUniversal(); }
     });
 
     $.get({
         url: "/page/particles.html",
         success: (response) => $("#particleContainer").html(response)
     });
+
+    
 });
 
 $("header").on("click", function(){
     if($(".menuTileWrapper").length == 0) SmoothLoadPage("menu");
 })
+
+function BindUniversal(){
+    $("button:not([noLoad])").each(function(){
+        $(this).on("click", function(){
+            $(this).attr("disabled", "disabled");
+        });
+    });
+
+    $(".imgBlur").each(function(){
+        $(this).on("click", function(){
+            $(this).removeClass("imgBlur");
+        });
+    });
+
+    $(".btnCloseModal").on("click", () => CloseModal());
+
+    $("svg.branch").each(function(){
+        $(this).attr("viewBox", `0 0 ${$(this).width()} ${$(this).height()}`);
+    });
+
+    $(".modalBlur").on("click", () => CloseModal());
+}
 
 function BindMenu(){
     $(".menuTileSubContainer").each(function(){
@@ -30,25 +54,11 @@ function BindMenu(){
 }
 
 function Bind(){
-    $("button:not([noLoad])").each(function(){
-        $(this).on("click", function(){
-            $(this).attr("disabled", "disabled");
-        });
-    });
-    
-    $(".imgBlur").each(function(){
-        $(this).on("click", function(){
-            $(this).removeClass("imgBlur");
-        });
-    });
-
     $(".backBtn").each(function(){
         $(this).on("click", function(){
             SmoothLoadPage($(this).attr("d-page"), $(this).attr("d-pk"), $(this).attr("d-pv"))
         });
     });
-
-    $(".btnCloseModal").on("click", () => CloseModal());
 
     $("#addCharacter").on("click", () => SmoothLoadPage("addCharacter"));
 
@@ -106,21 +116,30 @@ function Bind(){
         $(this).on("click", () => LoadModal("treeMenu", "c", $(this).closest(".treeNode").attr("d-chid")))
     });
 
-    $("svg.branch").each(function(){
-        //$(this).attr("viewbox", `-${$(this).width()/2} -${$(this).height()/2} ${$(this).width()} ${$(this).height()}`);
-        $(this).attr("viewBox", `0 0 ${$(this).width()} ${$(this).height()}`);
-    });
-
     $(".tab").each(function(){
         $(this).on("click", () => SmoothLoadPage("characterinfo", "c", $(this).attr("d-chid")));
     });
+    
+    $(".galleryItem").each(function(){
+        $(this).on("click",function(){
+            if(!$(this).find("img").hasClass("permaImgBlur")){
+                LoadModal("imgRestore", "c", `${$("#cid").val()}&i=${$(this).attr("d-iid")}`)
+            }
+            else {
+                $(this).find("img").removeClass("permaImgBlur");
+            }
+        });
+    });
 
-    $(".modalBlur").on("click", () => CloseModal());
+    DrawSvgBranches();
+}
 
+function ModalBind(){
     $("#modBtnAddPartner").on("click", () => LoadModal("treeMenuPartner", "c", $("#modCID").val()));
     $("#modBtnAddChild").on("click", () => LoadModal("treeMenuChildren", "c", $("#modCID").val()))
     $("#modBtnAddChildWithExisting").on("click", () => LoadModal("treeMenuChildWithExisting", "c", $("#modCID").val()))
     $("#modBtnAddExistingPartner").on("click", () => LoadModal("treeMenuPartnerWithExisting", "c", $("#modCID").val()))
+    $("#btnEditRelations").on("click", () => LoadModal("treeMenuPartners", "c", $("#modCID").val()));
     
     // p1 & p2 --> Add child of p1 & p2
     $(".modBtnAddChildWithSuggestion").on("click", function() { SmoothLoadPage("addcharacter", "p1", `${$("#modCID").val()}&p2=${$(this).attr("d-sid")}`)});
@@ -148,7 +167,7 @@ function Bind(){
     $("#btnDeleteImage").on("click", function() { LoadModal("imgDelete", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
     $("#btnMoreActions").on("click", function() { LoadModal("charMoreActions", "c", `${$("#cid").val()}`)});
     $("#btnEditCharacter").on("click", function() { SmoothLoadPage("addCharacter", "e", `${$("#cid").val()}`)});
-
+    
 
     $("#formToggleSensitivity").off().on("submit", (event) => {
         event.preventDefault();
@@ -179,17 +198,6 @@ function Bind(){
     });
 
     $("#btnOpenHiddenImgBrowser").on("click", () => SmoothLoadPage("hiddenImgGallery", "c", $("#modCID").val()));
-    
-    $(".galleryItem").each(function(){
-        $(this).on("click",function(){
-            if(!$(this).find("img").hasClass("permaImgBlur")){
-                LoadModal("imgRestore", "c", `${$("#cid").val()}&i=${$(this).attr("d-iid")}`)
-            }
-            else {
-                $(this).find("img").removeClass("permaImgBlur");
-            }
-        });
-    });
 
     $("#formDeleteImage").off().on("submit", (event) => {
         event.preventDefault();
@@ -197,9 +205,28 @@ function Bind(){
         let formData = new FormData($("#formDeleteImage")[0]);
         SmoothPost(formData, "imgDelete", "characterinfo", "c", $("#modCID").val());
     });
-    
-    DrawSvgBranches();
 
+    $(".btnUpdateRelation").each(function(){
+        $(this).on("click", () => {
+            $(this).closest("form").find(".formAction").val("update");
+        });
+    });
+
+    $(".btnDeleteRelation").each(function(){
+        $(this).on("click", () => {
+            $(this).closest("form").find(".formAction").val("delete");
+        });
+    });
+
+    $(".editRelationForm").each(function(){
+        $(this).off().on("submit", (event) => {
+            event.preventDefault();
+            $(this).find(".btnUpdateRelation").attr("disabled", "disabled");
+            $(this).find(".btnUpdateRelation").attr("disabled", "disabled");
+            let formData = new FormData($(this)[0]);
+            SmoothPost(formData, "relationEdit", "characterinfo", "c", $("#modCID").val());
+        });
+    });    
 }
 
 $( window ).on( "resize", function() {

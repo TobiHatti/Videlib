@@ -62,7 +62,7 @@ $sql->Open();
 
 
             <?php
-            $tree = FamilyTree::CreateTree($characterID, 1);
+            $tree = FamilyTree::CreateTree($characterID, 2);
             $graph = $tree->GetStructuralGraph();
             ?>
             <div class="familyTreeView">

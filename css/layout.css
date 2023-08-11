@@ -889,6 +889,19 @@ details.parentalRelations[open] summary::after {
   border-radius: 20px;
   resize: none;
 }
+.modalWrapper .modal .modalContent .partnerBox span {
+  display: block;
+  border-top: 1px solid white;
+  padding: 10px;
+  margin-top: 10px;
+}
+.modalWrapper .modal .modalContent .partnerBox button {
+  width: 60px;
+  margin: 0 3px;
+}
+.modalWrapper .modal .modalContent .partnerBox select {
+  margin: 0 3px;
+}
 
 .modClose {
   animation: modalFadeOut;

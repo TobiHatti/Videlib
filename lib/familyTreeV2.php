@@ -47,8 +47,8 @@ class TreeNode {
         if($depth > 0)
         {
             $sql->Open();
-            $partnersRaw = $sql->ExecuteQuery("SELECT CA_ID AS CID, relations.RelationType AS RT FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CB_ID = ? AND SubType = 'Partner' UNION
-            SELECT CB_ID AS CID, relations.RelationType AS RT FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CA_ID = ? AND SubType = 'Partner'", $characterID, $characterID);
+            $partnersRaw = $sql->ExecuteQuery("SELECT CA_ID AS CID, relations.RelationType AS RT, RelationColor FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CB_ID = ? AND SubType = 'Partner' UNION
+            SELECT CB_ID AS CID, relations.RelationType AS RT, RelationColor FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.Type WHERE CA_ID = ? AND SubType = 'Partner'", $characterID, $characterID);
             
             $parentsRaw = $sql->ExecuteQuery("SELECT CB_ID AS CID, relations.RelationType AS RT, relation_types.Weight, relation_types.ParentalSubtype 
             FROM relations INNER JOIN relation_types ON relations.RelationType = relation_types.`Type` 
@@ -58,8 +58,8 @@ class TreeNode {
             // alternate positions for partners
             $alternator = false;
             foreach($partnersRaw as $partnerRelation){
-                if($alternator) array_push($this->partnerNodes, new TreeRelation($this, $partnerRelation["CID"], $sql, $depth, $layer));
-                else array_push($this->partnerNodes, new TreeRelation($partnerRelation["CID"], $this, $sql, $depth, $layer));
+                if($alternator) array_push($this->partnerNodes, new TreeRelation($this, $partnerRelation["CID"], $sql, $depth, $layer, $partnerRelation["RelationColor"]));
+                else array_push($this->partnerNodes, new TreeRelation($partnerRelation["CID"], $this, $sql, $depth, $layer, $partnerRelation["RelationColor"]));
                 $alternator != $alternator;
             }
 
@@ -86,8 +86,8 @@ class TreeNode {
 
     private function InstanciateParentNode($parentArray, $parentType, $sql, $depth){
         switch(count($parentArray)){
-            case 2: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], $parentArray[1]["CID"], $sql, $depth, $this->layer-1, $this)); break;
-            case 1: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], null, $sql, $depth, $this->layer-1, $this)); break;
+            case 2: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], $parentArray[1]["CID"], $sql, $depth, $this->layer-1, "white", $this)); break;
+            case 1: array_push($this->parentNodes, new TreeRelation($parentArray[0]["CID"], null, $sql, $depth, $this->layer-1, "white", $this)); break;
         }
     }
 
@@ -126,12 +126,11 @@ class TreeRelation {
     public array $childrenNodes;
     public TreeNode $leftNode;
     public TreeNode $rightNode;
-    
     public string $nodeColor;
 
-    public function __construct($leftNode, $rightNode,WrapMySQL $sql,int $depth, int $layer,?TreeNode $callingChild = null)
+    public function __construct($leftNode, $rightNode,WrapMySQL $sql,int $depth, int $layer,string $color, ?TreeNode $callingChild = null)
     {
-        $this->nodeColor = RandomColor();
+        $this->nodeColor = $color;
 
         if(is_object($leftNode)) $this->leftNode = $leftNode;
         else $this->leftNode = new TreeNode($leftNode, $sql, $depth - 1, $layer);
@@ -194,20 +193,20 @@ class TreeGraphNode{
         $this->graphPaths = array();
 
         foreach($callingNode->parentNodes as $parent){
-            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->leftNode->entity->characterID, ConnectionPoints::Bottom));
-            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->rightNode->entity->characterID, ConnectionPoints::Bottom));
+            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->leftNode->entity->characterID, ConnectionPoints::Bottom, "white"));
+            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->rightNode->entity->characterID, ConnectionPoints::Bottom, "white"));
         }
 
         foreach($callingNode->partnerNodes as $partner){
             if($partner->rightNode->entity->characterID == $callingNode->entity->characterID)
-                array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Right, $partner->leftNode->entity->characterID, ConnectionPoints::Left));
+                array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Right, $partner->leftNode->entity->characterID, ConnectionPoints::Left,  $partner->nodeColor));
             else
-                array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Left, $partner->rightNode->entity->characterID, ConnectionPoints::Right));
+                array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Left, $partner->rightNode->entity->characterID, ConnectionPoints::Right, $partner->nodeColor));
         }
 
         foreach($callingNode->partnerNodes as $partnerNode){
             foreach($partnerNode->childrenNodes as $childNode){
-                array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Bottom, $childNode->entity->characterID, ConnectionPoints::Top));
+                array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Bottom, $childNode->entity->characterID, ConnectionPoints::Top, "white"));
             }
         }
     }
@@ -227,7 +226,7 @@ class TreeGraphNode{
                 if(!empty($paths)){
                     $paths .= ";";
                 }
-                $paths .= $dir.":".$pdef->toNode;
+                $paths .= $dir.":".$pdef->toNode.":".$pdef->color;
             }
         }
         return $paths;
@@ -247,12 +246,14 @@ class TreeGraphLine{
     public ConnectionPoints $fromConnectionPoint;
     public string $toNode;
     public ConnectionPoints $toConnectionPoint;
+    public string $color;
 
-    public function __construct(string $from, ConnectionPoints $fromPoint, string $to, ConnectionPoints $toPoint)
+    public function __construct(string $from, ConnectionPoints $fromPoint, string $to, ConnectionPoints $toPoint, string $color)
     {
         $this->fromNode = $from;
         $this->fromConnectionPoint = $fromPoint;
         $this->toNode = $to;
         $this->toConnectionPoint = $toPoint;
+        $this->color = $color;
     }
 }

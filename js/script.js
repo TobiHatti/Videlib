@@ -6,6 +6,7 @@ function LoadPage(page, getKey = null, getValue = null){
         url: `/page/${page}.php?${Math.random()}${urlAppendix}`,
         success: function(response){
             $("main").html(response);
+            BindUniversal();
             BindMenu();
             Bind();
         }
@@ -50,8 +51,8 @@ function LoadModal(page, getKey = null, getValue = null){
             success: function(response){
                 $(".modalContent").html(response);
                 $(".modalContent").removeClass("modContentFadeOut").addClass("modContentFadeIn");
-                BindMenu();
-                Bind();
+                BindUniversal();
+                ModalBind();
             }
         });
     }, 200);
@@ -91,11 +92,11 @@ function DrawBranchCollections(element, direction, collection){
     
     branches.forEach(branch => {
         let branchSections = branch.split(':');
-        DrawBranch(element, direction, branchSections[1], branchSections[0]);
+        DrawBranch(element, direction, branchSections[1], branchSections[0], branchSections[2]);
     });
 }
 
-function DrawBranch(element, fromDirection, targetID, toDirection){
+function DrawBranch(element, fromDirection, targetID, toDirection, color){
     if(targetID != undefined && targetID != "00000000-0000-0000-0000-000000000000") {
 
         let sourceElement = element[0];
@@ -105,20 +106,22 @@ function DrawBranch(element, fromDirection, targetID, toDirection){
         let destinationElement = dest[0];
         let destinationContainer = dest.parent()[0];
 
-
-        let svg = $(".branch")[0];
-        let newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-        newElement.setAttribute("d",`M${GetBranchCoord(sourceElement, elementContainer, fromDirection)} ${GetBranchCoord(destinationElement, destinationContainer, toDirection)}`); 
-        newElement.style.stroke = "white"; 
-        newElement.style.strokeWidth = "2px";
-        newElement.style.fill = "none";
-        svg.appendChild(newElement);
+        try{
+            let svg = $(".branch")[0];
+            let newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
+            newElement.setAttribute("d",`M${GetBranchCoord(sourceElement, elementContainer, fromDirection)} ${GetBranchCoord(destinationElement, destinationContainer, toDirection)}`); 
+            newElement.style.stroke = color; 
+            newElement.style.strokeWidth = "2px";
+            newElement.style.fill = "none";
+            svg.appendChild(newElement);
+        }
+        catch(e){
+            //console.warn("Error drawing to target " + targetID);
+        }
     }
 }
 
 function GetBranchCoord(element, container, position, straight = false){
-
-    // Top left of node
     let x = element.offsetLeft + container.offsetLeft;
     let y = element.offsetTop + container.offsetTop;
 
