@@ -73,12 +73,16 @@ $sql->Open();
                     <?php foreach($graph as $layer): ?>
                     <div class="treeLayer">
                         <?php foreach($layer->nodes as $node): ?>
-                            <?php if($node->characterID != "00000000-0000-0000-0000-000000000000"): ?>
-                            <div class="treeNode" d-chid="<?= $node->characterID ?>">
+                            <?php if($node->entity->characterID != "00000000-0000-0000-0000-000000000000"): ?>
+                            <div class="treeNode" d-chid="<?= $node->entity->characterID ?>" 
+                                d-tbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Top) ?>" 
+                                d-bbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Bottom) ?>"  
+                                d-lbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Left) ?>"  
+                                d-rbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Right) ?>">
                                 <div class="nodeImg">
-                                    <img src="<?= Img($node->filepath, $node->name) ?>" />
+                                    <img src="<?= Img($node->entity->filepath, $node->entity->name) ?>" />
                                 </div>
-                                <span class="nodeName"><?= $node->displayName ?></span>
+                                <span class="nodeName"><?= $node->entity->displayName ?></span>
                             </div>
                             <?php endif; ?>
                         <?php endforeach; ?>

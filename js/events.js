@@ -243,8 +243,8 @@ function SvgDrawTree(){
 
         let newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
         newElement.setAttribute("d",`M 0 0 L ${x_bottom} ${y_bottom}`); //Set path's data
-        newElement.style.stroke = "red"; //Set stroke colour
-        newElement.style.strokeWidth = "5px"; //Set stroke width
+        newElement.style.stroke = "white"; //Set stroke colour
+        newElement.style.strokeWidth = "2px"; //Set stroke width
         svg.appendChild(newElement);
     });
 }

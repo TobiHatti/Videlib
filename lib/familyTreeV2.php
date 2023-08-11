@@ -95,23 +95,23 @@ class TreeNode {
     {
         $graph = array();
 
-        array_push(TreeGraphLayer::GetLayer($graph, 0), $this->entity);
+        array_push(TreeGraphLayer::GetLayer($graph, 0), new TreeGraphNode($this));
         
         foreach($this->parentNodes as $parentNode){
-            array_push(TreeGraphLayer::GetLayer($graph, -1), $parentNode->leftNode->entity);
-            array_push(TreeGraphLayer::GetLayer($graph, -1), $parentNode->rightNode->entity);
+            array_push(TreeGraphLayer::GetLayer($graph, -1), new TreeGraphNode($parentNode->leftNode));
+            array_push(TreeGraphLayer::GetLayer($graph, -1), new TreeGraphNode($parentNode->rightNode));
         }
         
         foreach($this->partnerNodes as $partnerNode){
             if($partnerNode->rightNode->entity->characterID == $this->entity->characterID)
-                array_push(TreeGraphLayer::GetLayer($graph, 0), $partnerNode->leftNode->entity);
+                array_push(TreeGraphLayer::GetLayer($graph, 0), new TreeGraphNode($partnerNode->leftNode));
             else
-                array_unshift(TreeGraphLayer::GetLayer($graph, 0), $partnerNode->rightNode->entity);
+                array_unshift(TreeGraphLayer::GetLayer($graph, 0), new TreeGraphNode($partnerNode->rightNode));
         }
 
         foreach($this->partnerNodes as $partnerNode){
             foreach($partnerNode->childrenNodes as $childNode){
-                array_push(TreeGraphLayer::GetLayer($graph, 1), $childNode->entity);
+                array_push(TreeGraphLayer::GetLayer($graph, 1), new TreeGraphNode($childNode));
             }
         }
     
@@ -119,28 +119,6 @@ class TreeNode {
             return strcmp($a->layer, $b->layer);
         });
         return $graph;
-    }
-
-
-
-}
-
-class TreeGraphLayer{
-    public int $layer;
-    public array $nodes;
-
-    public function __construct(int $layer){
-        $this->layer = $layer;
-        $this->nodes = array();
-    }
-
-    public static function &GetLayer(array &$graph, int $layer) {
-        foreach($graph as $glayer){
-            if($glayer->layer == $layer) return $glayer->nodes;
-        }
-        $newLayer = new TreeGraphLayer($layer);
-        array_push($graph, $newLayer);
-        return $newLayer->nodes;
     }
 }
 
@@ -185,4 +163,96 @@ class TreeRelation {
             else array_push($this->childrenNodes, new TreeNode($child["ChildID"], $sql, $depth - 1, $layer + 1 ));
         }
     } 
+}
+
+class TreeGraphLayer{
+    public int $layer;
+    public array $nodes;
+
+    public function __construct(int $layer){
+        $this->layer = $layer;
+        $this->nodes = array();
+    }
+
+    public static function &GetLayer(array &$graph, int $layer) {
+        foreach($graph as $glayer){
+            if($glayer->layer == $layer) return $glayer->nodes;
+        }
+        $newLayer = new TreeGraphLayer($layer);
+        array_push($graph, $newLayer);
+        return $newLayer->nodes;
+    }
+}
+
+class TreeGraphNode{
+    public FamilyEntity $entity;
+    public array $graphPaths;
+
+    public function __construct(TreeNode $callingNode)
+    {
+        $this->entity = $callingNode->entity;
+        $this->graphPaths = array();
+
+        foreach($callingNode->parentNodes as $parent){
+            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->leftNode->entity->characterID, ConnectionPoints::Right));
+            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->rightNode->entity->characterID, ConnectionPoints::Left));
+        }
+
+        foreach($callingNode->partnerNodes as $partner){
+            if($partner->rightNode->entity->characterID == $callingNode->entity->characterID)
+                array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Right, $partner->leftNode->entity->characterID, ConnectionPoints::Left));
+            else
+                array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Left, $partner->rightNode->entity->characterID, ConnectionPoints::Right));
+        }
+
+        foreach($callingNode->partnerNodes as $partnerNode){
+            foreach($partnerNode->childrenNodes as $childNode){
+                array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Bottom, $childNode->entity->characterID, ConnectionPoints::Top));
+            }
+        }
+    }
+
+    public function GetPathDefinitions(ConnectionPoints $cPoint){
+        $paths = "";
+        foreach($this->graphPaths as $pdef){
+            if($pdef->fromConnectionPoint == $cPoint){
+                $dir = "";
+                switch($pdef->toConnectionPoint){
+                    case ConnectionPoints::Top: $dir = "T"; break;
+                    case ConnectionPoints::Bottom: $dir = "B"; break;
+                    case ConnectionPoints::Left: $dir = "L"; break;
+                    case ConnectionPoints::Right: $dir = "R"; break;
+                }
+
+                if(!empty($paths)){
+                    $paths .= ";";
+                }
+                $paths .= $dir.":".$pdef->toNode;
+            }
+        }
+        return $paths;
+    }
+}
+
+enum ConnectionPoints{
+    case Top;
+    case Left;
+    case Right;
+    case Bottom;
+}
+
+
+class TreeGraphLine{
+    public string $fromNode;
+    public ConnectionPoints $fromConnectionPoint;
+    public string $toNode;
+    public ConnectionPoints $toConnectionPoint;
+
+    public function __construct(string $from, ConnectionPoints $fromPoint, string $to, ConnectionPoints $toPoint)
+    {
+        $this->fromNode = $from;
+        $this->fromConnectionPoint = $fromPoint;
+        $this->toNode = $to;
+        $this->toConnectionPoint = $toPoint;
+    }
 }

@@ -30,6 +30,9 @@ function AddParentRelations(WrapMySQL $sql, string $childID, string $motherID, s
     if($edit){
         $motherRelationID = $sql->ExecuteScalar("SELECT ID FROM relations WHERE CA_ID = ? AND RelationType = ?", $childID, $motherType);
         $fatherRelationID = $sql->ExecuteScalar("SELECT ID FROM relations WHERE CA_ID = ? AND RelationType = ?", $childID, $fatherType);
+
+        if(empty($motherRelationID)) $motherRelationID = GUID();
+        if(empty($fatherRelationID)) $fatherRelationID = GUID();
     }
 
 
