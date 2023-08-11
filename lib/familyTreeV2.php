@@ -194,8 +194,8 @@ class TreeGraphNode{
         $this->graphPaths = array();
 
         foreach($callingNode->parentNodes as $parent){
-            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->leftNode->entity->characterID, ConnectionPoints::Right));
-            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->rightNode->entity->characterID, ConnectionPoints::Left));
+            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->leftNode->entity->characterID, ConnectionPoints::Bottom));
+            array_push($this->graphPaths, new TreeGraphLine($this->entity->characterID, ConnectionPoints::Top, $parent->rightNode->entity->characterID, ConnectionPoints::Bottom));
         }
 
         foreach($callingNode->partnerNodes as $partner){
