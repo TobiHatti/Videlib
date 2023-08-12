@@ -79,67 +79,115 @@ const Directions = {
 	Bottom: "B"
 }
 
+
 function DrawSvgBranches(){
-    $(".treeNode").each(function(){
-        DrawBranchCollections($(this), Directions.Top, $(this).attr("d-tbranch"));
-        DrawBranchCollections($(this), Directions.Bottom, $(this).attr("d-bbranch"));
-        DrawBranchCollections($(this), Directions.Left, $(this).attr("d-lbranch"));
-        DrawBranchCollections($(this), Directions.Right, $(this).attr("d-rbranch"));
+    let paths = $("#pathDef").val().split(';');
+
+    paths.forEach(function(value, index){
+
+        let segments = value.split(':');
+
+        let type = segments[0];
+        let points = segments[1].split('&');
+        let lineColor = segments[2];
+        let lineType = segments[3];
+        let lineSize = segments[4];
+
+        let coords = "";
+        if(type == 'N') coords = GetNormalConnectionPoints(points)
+        else coords = GetBranchConnectionPoints(points);
+
+        if(coords != ""){
+            try{
+                let svg = $(".branch")[0];
+                let newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
+                newElement.setAttribute("d",coords); 
+                newElement.style.stroke = lineColor; 
+                newElement.style.strokeWidth = lineSize + "px";
+                newElement.style.strokeLinecap = "round";
+                newElement.style.strokeDasharray = lineType;
+                newElement.style.fill = "none";
+                svg.appendChild(newElement);
+            }
+            catch(e){
+                //console.warn("Error drawing to target " + targetID);
+            }
+        }
     });
 }
 
-function DrawBranchCollections(element, direction, collection){
-    let branches = collection.split(';');
+function GetNormalConnectionPoints(points){
+    let pointA = points[0];
+    let elemIDA = points[1];
+    let pointB = points[2];
+    let elemIDB = points[3];
+
+    if(elemIDA == undefined || elemIDA == "00000000-0000-0000-0000-000000000000"
+    || elemIDB == undefined || elemIDB == "00000000-0000-0000-0000-000000000000") return "";
+
+    let elemA = $(`.treeNode[d-chid="${elemIDA}"]`);
+    let elemADom = elemA[0];
+    let elementAContainer = elemA.parent()[0];
+
+    let elemB = $(`.treeNode[d-chid="${elemIDB}"]`);
+    let elemBDom = elemB[0];
+    let elementBContainer = elemB.parent()[0];
+
+    let aPos = GetBranchCoord(elemADom, elementAContainer, pointA);
+    let bPos = GetBranchCoord(elemBDom, elementBContainer, pointB);
+
+    return `M ${aPos.xPos} ${aPos.yPos} L ${bPos.xPos} ${bPos.yPos}`;
+}
+
+function GetBranchConnectionPoints(points){
+    let pointA1 = points[0];
+    let elemIDA1 = points[1];
+    let pointA2 = points[2];
+    let elemIDA2 = points[3];
+    let pointB = points[4];
+    let elemIDB = points[5];
+
+    if(elemIDA1 == undefined || elemIDA1 == "00000000-0000-0000-0000-000000000000"
+    || elemIDA2 == undefined || elemIDA2 == "00000000-0000-0000-0000-000000000000"
+    || elemIDB == undefined || elemIDB == "00000000-0000-0000-0000-000000000000") return "";
+
+    let elemA1 = $(`.treeNode[d-chid="${elemIDA1}"]`);
+    let elemA1Dom = elemA1[0];
+    let elementA1Container = elemA1.parent()[0];
+
+    let elemA2 = $(`.treeNode[d-chid="${elemIDA2}"]`);
+    let elemA2Dom = elemA2[0];
+    let elementA2Container = elemA2.parent()[0];
+
+    let elemB = $(`.treeNode[d-chid="${elemIDB}"]`);
+    let elemBDom = elemB[0];
+    let elementBContainer = elemB.parent()[0];
+
+    let a1Pos = GetBranchCoord(elemA1Dom, elementA1Container, pointA1);
+    let a2Pos = GetBranchCoord(elemA2Dom, elementA2Container, pointA2);
     
-    branches.forEach(branch => {
-        let branchSections = branch.split(':');
-        DrawBranch(element, direction, branchSections[1], branchSections[0], branchSections[2]);
-    });
+    let aPos = {
+        xPos: (a1Pos.xPos + a2Pos.xPos)/2,
+        yPos: (a1Pos.yPos + a2Pos.yPos)/2,
+    };
+    
+    let bPos = GetBranchCoord(elemBDom, elementBContainer, pointB);
+
+    return `M ${aPos.xPos} ${aPos.yPos} L ${bPos.xPos} ${bPos.yPos}`;
+
+
+
 }
 
-function DrawBranch(element, fromDirection, targetID, toDirection, color){
-    if(targetID != undefined && targetID != "00000000-0000-0000-0000-000000000000") {
 
-        let sourceElement = element[0];
-        let elementContainer = element.parent()[0];
-
-        let dest = $(`.treeNode[d-chid="${targetID}"]`);
-        let destinationElement = dest[0];
-        let destinationContainer = dest.parent()[0];
-
-        try{
-            let svg = $(".branch")[0];
-            let newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-            newElement.setAttribute("d",`M${GetBranchCoord(sourceElement, elementContainer, fromDirection)} ${GetBranchCoord(destinationElement, destinationContainer, toDirection)}`); 
-            newElement.style.stroke = color; 
-            newElement.style.strokeWidth = "2px";
-            newElement.style.fill = "none";
-            svg.appendChild(newElement);
-        }
-        catch(e){
-            //console.warn("Error drawing to target " + targetID);
-        }
-    }
-}
-
-function GetBranchCoord(element, container, position, straight = false){
+function GetBranchCoord(element, container, position){
     let x = element.offsetLeft + container.offsetLeft;
     let y = element.offsetTop + container.offsetTop;
 
-    if(straight){
-        switch(position){
-            case Directions.Left: return `V${y + element.clientHeight/2 } H${x}`;
-            case Directions.Right: return `V${y + element.clientHeight/2} H${x + element.clientWidth}`;
-            case Directions.Top: return `V${y} H${x + element.clientWidth/2}`;
-            case Directions.Bottom: return `V${y + element.clientHeight} H${x + element.clientWidth/2}`;
-        }
-    }
-    else{
-        switch(position){
-            case Directions.Left: return `${x} ${y + element.clientHeight/2}`;
-            case Directions.Right: return `${x + element.clientWidth} ${y + element.clientHeight/2}`;
-            case Directions.Top: return `${x + element.clientWidth/2} ${y}`;
-            case Directions.Bottom: return `${x + element.clientWidth/2} ${y + element.clientHeight}`;
-        }
-    }
+    switch(position){
+        case Directions.Left: return { xPos: x, yPos: y + element.clientHeight/2};
+        case Directions.Right: return { xPos: x + element.clientWidth, yPos: y + element.clientHeight/2};
+        case Directions.Top: return { xPos: x + element.clientWidth/2, yPos: y};
+        case Directions.Bottom: return { xPos: x + element.clientWidth/2, yPos: y + element.clientHeight};
+    }   
 }

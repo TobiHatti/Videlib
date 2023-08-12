@@ -2,9 +2,9 @@
 
 enum ConnectionPoint: string{
     case Top = "T";
-    case Left = "D";
-    case Right = "C";
-    case Bottom = "S";
+    case Left = "L";
+    case Right = "R";
+    case Bottom = "B";
 }
 
 class FamilyTree{
@@ -12,7 +12,7 @@ class FamilyTree{
     public static function CreateTree(string $startNode, int $depth){
         $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"));
         TreePath::Init($sql);
-        return new TreeNode($sql,$startNode, $depth);
+        return new TreeNode($sql,$startNode, $depth, "");
     }
 }
 
@@ -31,9 +31,9 @@ class TreePath{
 
     public function __construct(TreeNode $nodeA, ?TreeNode $nodeA2, TreeNode $nodeB, ConnectionPoint $pointA, ?ConnectionPoint $pointA2, ConnectionPoint $pointB, string $relation)
     {
-        $this->nodeA = $nodeA->shortID;
-        if($nodeA2 != null) $this->nodeA2 = $nodeA2->shortID;
-        $this->nodeB = $nodeB->shortID;
+        $this->nodeA = $nodeA->ID;
+        if($nodeA2 != null) $this->nodeA2 = $nodeA2->ID;
+        $this->nodeB = $nodeB->ID;
 
         $this->pointA = $pointA;
         $this->pointA2 = $pointA2;
@@ -51,6 +51,8 @@ class TreePath{
     }
 
     public static function Init(WrapMySQL $sql){
+        TreePath::$pathLog = array_diff(TreePath::$pathLog, TreePath::$pathLog);
+
         $sql->Open();
         $graphData = $sql->ExecuteQuery("SELECT PathColor, PathWidth, PathType, `Type` AS RType FROM relation_types WHERE SubType = 'Partner'
             UNION SELECT PathColor, PathWidth, PathType, ParentalSubType AS RType  FROM relation_types WHERE SubType = 'Relative' GROUP BY ParentalSubType");
@@ -74,10 +76,10 @@ class TreePath{
 
 
             if(!isset($path->nodeA2)){
-                $def .= "N:{$path->pointA->value}-{$path->nodeA}-{$path->pointB->value}-{$path->nodeB}:".TreePath::$pathData[$path->relationType]["color"].":".TreePath::$pathData[$path->relationType]["type"].":".TreePath::$pathData[$path->relationType]["size"];
+                $def .= "N:{$path->pointA->value}&{$path->nodeA}&{$path->pointB->value}&{$path->nodeB}:".TreePath::$pathData[$path->relationType]["color"].":".TreePath::$pathData[$path->relationType]["type"].":".TreePath::$pathData[$path->relationType]["size"];
             }
             else {
-                $def .= "B:{$path->pointA->value}-{$path->nodeA}-{$path->pointA2->value}-{$path->nodeA2}-{$path->pointB->value}-{$path->nodeB}:".TreePath::$pathData[$path->relationType]["color"].":".TreePath::$pathData[$path->relationType]["type"].":".TreePath::$pathData[$path->relationType]["size"];
+                $def .= "B:{$path->pointA->value}&{$path->nodeA}&{$path->pointA2->value}&{$path->nodeA2}&{$path->pointB->value}&{$path->nodeB}:".TreePath::$pathData[$path->relationType]["color"].":".TreePath::$pathData[$path->relationType]["type"].":".TreePath::$pathData[$path->relationType]["size"];
             }
 
             $first = false;
@@ -87,21 +89,19 @@ class TreePath{
 }
 
 class TreeNode {
-    private static $nodeCtr = 0;
-
     public string $ID;
-    public string $shortID;
     public string $Symbol;
     public string $Name;
     public ?string $Img;
     public string $Gender;
-
+    public string $DisplayName;
+    
     public array $parentBranches = array();
     public array $leftPartnerBranches = array();
     public array $rightPartnerBranches = array();
     public array $childrenBranches = array();
 
-    public function __construct(WrapMySQL $sql, string $id, int $depth)
+    public function __construct(WrapMySQL $sql, string $id, int $depth, string $callingID)
     {
         // Load Personal Data
         $sql->Open();
@@ -109,11 +109,11 @@ class TreeNode {
         $sql->Close();
 
         $this->ID = $id;
-        $this->shortID = TreeNode::$nodeCtr++;
         $this->Symbol = $data["Symbol"];
         $this->Name = $data["Name"];
         $this->Img = $data["FullresPath"];
         $this->Gender = $data["Gender"];
+        $this->DisplayName = $data["Symbol"]." ".$data["Name"];
 
         
         if($depth > 0){
@@ -145,6 +145,8 @@ class TreeNode {
 
             $alternator = false;
             foreach($partnerData as $partner){
+                if($callingID == $partner["CID"]) continue;
+
                 if($alternator)
                     array_push($this->leftPartnerBranches, new TreeBranch($sql, null, $this, ConnectionPoint::Left, $partner["CID"], ConnectionPoint::Right, $partner["RT"], $depth));
                 else
@@ -166,7 +168,7 @@ class TreeNode {
 
         $layer0 = array();
         foreach($this->parentBranches as $parents){
-            array_push($layer0, $parents->nodeA, $parents->nodeB);
+            array_push($layer0, $parents->branch->nodeA, $parents->branch->nodeB);
         }
 
         $layer1 = array();
@@ -207,11 +209,14 @@ class TreeBranch {
 
     public function __construct(WrapMySQL $sql, ?TreeNode $callingNode, $nodeA, ConnectionPoint $nodeAConnectionPoint, $nodeB, ConnectionPoint $nodeBConnectionPoint, string $relationType, int $depth, bool $childRelation = false)
     {
+        $callingID = "";
+        if($callingNode != null) $callingID = $callingNode->ID;
+
         if(is_object($nodeA)) $this->nodeA = $nodeA;
-        else $this->nodeA = new TreeNode($sql, $nodeA, $depth - 1);
+        else $this->nodeA = new TreeNode($sql, $nodeA, $depth - 1, $callingID);
 
         if(is_object($nodeB)) $this->nodeB = $nodeB;
-        else $this->nodeB = new TreeNode($sql, $nodeB, $depth - 1);
+        else $this->nodeB = new TreeNode($sql, $nodeB, $depth - 1, $callingID);
 
         $this->pointA = $nodeAConnectionPoint;
         $this->pointB = $nodeBConnectionPoint;
@@ -256,7 +261,7 @@ class ChildBranch{
         $this->branch = $branch;
 
         if(is_object($node)) $this->node = $node;
-        else $this->node = new TreeNode($sql, $node, $depth - 1);
+        else $this->node = new TreeNode($sql, $node, $depth - 1, "");
 
         $this->point = ConnectionPoint::Top;
 

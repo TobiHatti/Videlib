@@ -3,7 +3,7 @@ require("../lib/connect.php");
 require("../lib/wrapsql.php");
 require("../lib/util.php");
 require("../lib/ageCalc.php");
-require("../lib/familyTreeV2.php");
+require("../lib/familyTreeV3.php");
 
 AgeCalc::Init($_SESSION["VidePID"]);
 $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"),false);
@@ -63,26 +63,22 @@ $sql->Open();
 
             <?php
             $tree = FamilyTree::CreateTree($characterID, 2);
-            $graph = $tree->GetStructuralGraph();
+            $graph = $tree->GetSimpleGraph();
             ?>
             <div class="familyTreeView">
                 <svg class="branch" viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
                 </svg>
                 <div class="layerContainer">
-                    
+                    <input type="hidden" id="pathDef" value="<?= TreePath::GetDefinition() ?>" />
                     <?php foreach($graph as $layer): ?>
                     <div class="treeLayer">
-                        <?php foreach($layer->nodes as $node): ?>
-                            <?php if($node->entity->characterID != "00000000-0000-0000-0000-000000000000"): ?>
-                            <div class="treeNode" d-chid="<?= $node->entity->characterID ?>" 
-                                d-tbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Top) ?>" 
-                                d-bbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Bottom) ?>"  
-                                d-lbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Left) ?>"  
-                                d-rbranch="<?= $node->GetPathDefinitions(ConnectionPoints::Right) ?>">
+                        <?php foreach($layer as $node): ?>
+                            <?php if($node->ID != "00000000-0000-0000-0000-000000000000"): ?>
+                            <div class="treeNode" d-chid="<?= $node->ID ?>">
                                 <div class="nodeImg">
-                                    <!-- <img src="<?= Img($node->entity->filepath, $node->entity->name) ?>" /> -->
+                                    <img src="<?= Img($node->Img, $node->Name) ?>" />
                                 </div>
-                                <span class="nodeName"><?= $node->entity->displayName ?></span>
+                                <span class="nodeName"><?= $node->DisplayName ?></span>
                             </div>
                             <?php endif; ?>
                         <?php endforeach; ?>
