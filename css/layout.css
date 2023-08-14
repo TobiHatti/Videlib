@@ -1008,4 +1008,47 @@ details.parentalRelations[open] summary::after {
   background-color: rgba(246, 223, 255, 0.5);
   box-shadow: 0 0 30px 0 rgba(242, 223, 255, 0.486);
   transform: scale(1.1) rotate(-5deg);
+}
+
+.settingSection {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.settingSection summary {
+  font-size: 1.3em;
+  margin: 12px 0;
+}
+.settingSection p {
+  color: gray;
+  font-size: 0.9em;
+}
+.settingSection .ageEntry {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
+}
+.settingSection .ageEntry .subContainer {
+  display: flex;
+}
+.settingSection .ageEntry .labeledInput {
+  position: relative;
+  margin: 8px 0;
+}
+.settingSection .ageEntry .labeledInput span {
+  position: absolute;
+  font-size: 0.8em;
+  left: 20px;
+  top: -12px;
+}
+.settingSection .ageEntry .labeledInput input[type=text] {
+  width: 120px;
+}
+.settingSection .ageEntry .labeledInput input[type=number] {
+  width: 70px;
+}
+.settingSection .ageEntry:not(:last-child) {
+  border-bottom: 1px solid white;
 }/*# sourceMappingURL=layout.css.map */

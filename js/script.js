@@ -81,39 +81,42 @@ const Directions = {
 
 
 function DrawSvgBranches(){
-    let paths = $("#pathDef").val().split(';');
+    try{
+        let paths = $("#pathDef").val().split(';');
 
-    paths.forEach(function(value, index){
+        paths.forEach(function(value, index){
 
-        let segments = value.split(':');
+            let segments = value.split(':');
 
-        let type = segments[0];
-        let points = segments[1].split('&');
-        let lineColor = segments[2];
-        let lineType = segments[3];
-        let lineSize = segments[4];
+            let type = segments[0];
+            let points = segments[1].split('&');
+            let lineColor = segments[2];
+            let lineType = segments[3];
+            let lineSize = segments[4];
 
-        let coords = "";
-        if(type == 'N') coords = GetNormalConnectionPoints(points)
-        else coords = GetBranchConnectionPoints(points);
+            let coords = "";
+            if(type == 'N') coords = GetNormalConnectionPoints(points)
+            else coords = GetBranchConnectionPoints(points);
 
-        if(coords != ""){
-            try{
-                let svg = $(".branch")[0];
-                let newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-                newElement.setAttribute("d",coords); 
-                newElement.style.stroke = lineColor; 
-                newElement.style.strokeWidth = lineSize + "px";
-                newElement.style.strokeLinecap = "round";
-                newElement.style.strokeDasharray = lineType;
-                newElement.style.fill = "none";
-                svg.appendChild(newElement);
+            if(coords != ""){
+                try{
+                    let svg = $(".branch")[0];
+                    let newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
+                    newElement.setAttribute("d",coords); 
+                    newElement.style.stroke = lineColor; 
+                    newElement.style.strokeWidth = lineSize + "px";
+                    newElement.style.strokeLinecap = "round";
+                    newElement.style.strokeDasharray = lineType;
+                    newElement.style.fill = "none";
+                    svg.appendChild(newElement);
+                }
+                catch(e){
+                    //console.warn("Error drawing to target " + targetID);
+                }
             }
-            catch(e){
-                //console.warn("Error drawing to target " + targetID);
-            }
-        }
-    });
+        });
+    }
+    catch(e){}
 }
 
 function GetNormalConnectionPoints(points){

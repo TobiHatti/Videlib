@@ -17,13 +17,16 @@ foreach($sql->ExecuteQuery("SELECT *, character_img.ID AS ImgID FROM characters
     LEFT JOIN character_img ON characters.ID = character_img.CharacterID AND character_img.Active = 1 
     WHERE characters.ID = ?  ORDER BY MainImg DESC LIMIT 1", $characterID) as $c) $cinfo = $c;
 $sql->Open();
+
+$age = AgeCalc::GetFromDate($cinfo["Birthdate"], $cinfo["AgeMultiplier"], $cinfo["AgeOffset"]);
+
 ?>
 
 <div class="contentWrapper">
     <div class="contentContainer">
         <div class="backBtn" d-page="characterlist" d-pk="" d-pv=""><i class="fa-solid fa-chevron-left"></i> Back</div>
         <div class="characterInfo">
-            <h1><?= $cinfo["Symbol"] ?><?= $cinfo["Name"]?> (<?= AgeCalc::GetFromDate($cinfo["Birthdate"], $cinfo["AgeMultiplier"], $cinfo["AgeOffset"]) ?>)</h1>
+            <h1><?= $cinfo["Symbol"] ?><?= $cinfo["Name"]?> <?= $age != "?" ? "(".$age.")" : "" ?></h1>
             <h2 class="species"><?= $cinfo["Species"]?></h2>
 
             <div class="mainImgContainer">
@@ -54,7 +57,7 @@ $sql->Open();
                 <div class="carouselItem carouselImg" d-sens="<?= $img["Sensitive"] ? "true" : "false" ?>" d-iid="<?= $img["ID"] ?>" d-idesc="<?= base64_encode($img["ImgDescription"]) ?>">
                     <img src="<?= Img($img["FullresPath"]) ?>" class="<?= $img["Sensitive"] ? "permaImgBlur" : "" ?>"/>
                 </div>
-                <?php endforeach; $sql->Close();?>
+                <?php endforeach; $sql->Close();?> 
             </div>   
             <br><br>
 
@@ -100,7 +103,7 @@ $sql->Open();
 
                 <?php $sql->Open();foreach($sql->ExecuteQuery("SELECT * FROM character_notes INNER JOIN users ON character_notes.UserID = users.ID WHERE CharacterID = ? ORDER BY CreatedDate DESC", $characterID) as $note): ?>
                 <div class="note">
-                    <span class="user">By <?= $note["Username"] ?> on <?= date_format(date_create($note["CreatedDate"]), "M. d Y \a\\t h:i A") ?></span>
+                    <span class="user">By @<?= $note["Username"] ?> on <?= date_format(date_create($note["CreatedDate"]), "M. d Y \a\\t h:i A") ?></span>
                     <p><?= nl2br($note["Note"]) ?></p>
                 </div>
                 <?php endforeach; $sql->Close(); ?>

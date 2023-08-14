@@ -1095,3 +1095,58 @@ details.parentalRelations{
         }
     }
 }
+
+
+.settingSection{
+    margin-bottom: 20px;
+    summary{
+        font-size: 1.3em;
+        margin: 12px 0;
+    }
+
+    p{
+        color: gray;
+        font-size: 0.9em;
+    }
+
+    display: flex;
+    flex-direction: column;
+    .ageEntry{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding-top: 10px;
+
+        .subContainer{
+            display:flex;
+        }
+
+        .labeledInput{
+            position: relative;
+            margin: 8px 0;
+
+            
+            span{
+                position: absolute;
+                font-size: 0.8em;
+                left: 20px;
+                top: -12px;
+            }
+
+            input[type="text"]{
+                width: 120px;
+            }
+
+            input[type="number"]{
+                width: 70px;
+            }
+        }
+
+        &:not(:last-child){
+            border-bottom: 1px solid white;
+        }
+    }
+
+
+}

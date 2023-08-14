@@ -1,6 +1,6 @@
 $(document).ready(() => {
     $.get({
-        url: `/page/characterinfo.php?${Math.random()}&c=8CF31BD6-0301-4267-94C4-D4DC7C8D566E`,
+        url: `/page/settings.php?${Math.random()}&c=8CF31BD6-0301-4267-94C4-D4DC7C8D566E`,
         success: (response) => { $("main").html(response); BindMenu(); Bind(); BindUniversal(); }
     });
 
@@ -9,6 +9,7 @@ $(document).ready(() => {
         success: (response) => $("#particleContainer").html(response)
     });
 
+    BindUniversal(); 
     
 });
 
@@ -52,6 +53,11 @@ function BindMenu(){
 }
 
 function Bind(){
+    $("details").each(function(){
+        //new Accordion($(this)[0]);
+    });
+
+
     $(".backBtn").each(function(){
         $(this).on("click", function(){
             SmoothLoadPage($(this).attr("d-page"), $(this).attr("d-pk"), $(this).attr("d-pv"))
@@ -134,6 +140,27 @@ function Bind(){
     $("#btnEditAltText").on("click", function() { LoadModal("imgAltText", "c", `${$("#cid").val()}&i=${$("#modIID").val()}&idesc=${$("#imgDescription").html()}`)});
     $("#btnMarkSensitive").on("click", function() { LoadModal("imgMarkSensitive", "c", `${$("#cid").val()}&s=${$(this).attr("d-sens")}&i=${$("#modIID").val()}`)});
     $("#btnDeleteImage").on("click", function() { LoadModal("imgDelete", "c", `${$("#cid").val()}&i=${$("#modIID").val()}`)});
+
+
+    $(".delBtn").on("click", function(){
+        $(this).closest(".ageEntry").remove();
+    });
+
+    $("#btnAddAgeSection").on("click", function(){
+        let template = $($("#ageTemplate")[0].content.cloneNode(true));
+
+        let i = $(".ageSection").find(".ageEntry").length;
+
+        template.find(".ageLabel").attr("name", "Label" + i);
+        template.find(".ageVal").attr("name", "Age" + i);
+        template.find(".ageDays").attr("name", "Days" + i);
+        template.find(".ageID").attr("name", "AID" + i);
+        template.find(".delBtn").on("click", function(){
+            $(this).closest(".ageEntry").remove();
+        });
+        
+        $(".ageSection").append(template);
+    });
 
     DrawSvgBranches();
 }

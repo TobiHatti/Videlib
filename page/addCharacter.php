@@ -52,7 +52,7 @@ if(isset($_GET["p1"]) && isset($_GET["p2"])){
 
 $characters = array();
 foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID WHERE characters.PartyID = ? AND characters.ID NOT IN (?) ORDER BY Name ASC", $_SESSION["VidePID"], $relationExclusionID) as $row)
-    array_push($characters, new Character($row["CID"], $row["Name"]." (".$row["Symbol"].") [".$row["Species"]."]"));
+    array_push($characters, new Character($row["CID"], $row["Name"]." ".(!empty($row["Symbol"]) ? "(".$row["Symbol"].")" : "")." ".(!empty($row["Species"]) ? "[".$row["Species"]."]" : "")));
 ?>
 
 <div class="contentWrapper">
@@ -78,7 +78,7 @@ foreach($sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER
                             <span>Owner</span>
                             <select name="owner">
                             <?php foreach($sql->ExecuteQuery("SELECT *,users.ID AS UID FROM users INNER JOIN party_users ON users.ID = party_users.UserID WHERE PartyID = ?",$_SESSION["VidePID"]) as $row): ?>
-                                <option value="<?= $row["UID"] ?>" <?= $edit && $row["UID"] == $echd["COwnerID"] ? "selected" : "" ?>><?= $row["Username"] ?></option>
+                                <option value="<?= $row["UID"] ?>" <?= $edit && $row["UID"] == $echd["COwnerID"] ? "selected" : "" ?>><?= $row["Symbol"] ?> <?= $row["DisplayName"] ?> <?= !$row["VirtualUser"] ? "(@".$row["Username"].")" : "" ?></option>
                             <?php endforeach; ?>
                             </select>
                         </td>
