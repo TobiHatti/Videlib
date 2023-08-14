@@ -12,7 +12,7 @@ class FamilyTree{
     public static function CreateTree(string $startNode, int $depth){
         $sql = new WrapMySQL(getenv("dbHost"), getenv("dbName"), getenv("dbUser"), getenv("dbPass"));
         TreePath::Init($sql);
-        return new TreeNode($sql,$startNode, $depth, "");
+        return new TreeNode($sql,$startNode, $depth, null);
     }
 }
 
@@ -101,8 +101,15 @@ class TreeNode {
     public array $rightPartnerBranches = array();
     public array $childrenBranches = array();
 
-    public function __construct(WrapMySQL $sql, string $id, int $depth, string $callingID)
+    public array $adjacentNodes = array();
+
+    public static int $adjacentStartCtr = 2; 
+
+    public function __construct(WrapMySQL $sql, string $id, int $depth, array $adjNodes = null)
     {
+        if($adjNodes != null) $this->adjacentNodes = $adjNodes;
+        $this->AdjustAdjacentNodes();
+
         // Load Personal Data
         $sql->Open();
         $data = $sql->ExecuteQuery("SELECT *, characters.ID AS CID FROM characters INNER JOIN users ON characters.COwnerID = users.ID LEFT JOIN character_img ON characters.ID = character_img.CharacterID WHERE characters.ID = ? ORDER BY MainImg DESC LIMIT 1", $id)[0];
@@ -131,6 +138,12 @@ class TreeNode {
                 ) AS Children WHERE Children.ParentCount = 1 AND CB_ID = ?", $id);
             $sql->Close();
 
+
+            // // Get all adjacent IDs
+            // foreach($parentData as $parents) { $this->SetAdjacent($parents["FatherID"]); $this->SetAdjacent($parents["MotherID"]); }
+            // foreach($partnerData as $partner) $this->SetAdjacent($partner["CID"]); 
+            // foreach($singleChildData as $child) $this->SetAdjacent($child["CA_ID"]);
+
             // Sort and insert Data
             foreach($parentData as $parents){
                 $sql->Open();
@@ -139,27 +152,46 @@ class TreeNode {
                 );
                 $sql->Close();
 
-                $branch = new TreeBranch($sql, $this, $parents["MotherID"], ConnectionPoint::Right, $parents["FatherID"], ConnectionPoint::Left, $relationType, $depth);
+                $branch = new TreeBranch($sql, $this, $parents["MotherID"], ConnectionPoint::Right, $parents["FatherID"], ConnectionPoint::Left, $relationType, $depth, false, $this->adjacentNodes);
                 array_push($this->parentBranches, $branch->cbranch);
             }
 
             $alternator = false;
             foreach($partnerData as $partner){
-                if($callingID == $partner["CID"]) continue;
-
                 if($alternator)
-                    array_push($this->leftPartnerBranches, new TreeBranch($sql, null, $this, ConnectionPoint::Left, $partner["CID"], ConnectionPoint::Right, $partner["RT"], $depth));
+                    array_push($this->leftPartnerBranches, new TreeBranch($sql, null, $this, ConnectionPoint::Left, $partner["CID"], ConnectionPoint::Right, $partner["RT"], $depth, false, $this->adjacentNodes));
                 else
-                    array_push($this->rightPartnerBranches, new TreeBranch($sql, null, $this, ConnectionPoint::Right, $partner["CID"], ConnectionPoint::Left, $partner["RT"], $depth));
+                    array_push($this->rightPartnerBranches, new TreeBranch($sql, null, $this, ConnectionPoint::Right, $partner["CID"], ConnectionPoint::Left, $partner["RT"], $depth, false, $this->adjacentNodes));
                 
                 $alternator = !$alternator;
             }
 
             foreach($singleChildData as $child){
-                array_push($this->childrenBranches, new TreeBranch($sql, null, $this, ConnectionPoint::Bottom, $child["CA_ID"], ConnectionPoint::Top, $child["ParentalSubType"], $depth, true));
+                array_push($this->childrenBranches, new TreeBranch($sql, null, $this, ConnectionPoint::Bottom, $child["CA_ID"], ConnectionPoint::Top, $child["ParentalSubType"], $depth, true, $this->adjacentNodes));
             }
 
+
+            
+
         }
+    }
+
+    public function SkipAdjacentNode($id){
+        if(isset($this->adjacentNodes[$id]) && $this->adjacentNodes[$id] > 0) return true;
+        return false;
+    }
+
+    public function AdjustAdjacentNodes(){
+        foreach($this->adjacentNodes as &$node) $node = $node - 1;
+        unset($node);
+
+        foreach (array_keys($this->adjacentNodes, 0, true) as $key) {
+            unset($this->adjacentNodes[$key]);
+        }
+    }
+
+    public function SetAdjacent($id){
+        $this->adjacentNodes[$id] = TreeNode::$adjacentStartCtr;
     }
 
     public function GetSimpleGraph(){
@@ -207,16 +239,16 @@ class TreeBranch {
 
     public array $childrenNodes = array();
 
-    public function __construct(WrapMySQL $sql, ?TreeNode $callingNode, $nodeA, ConnectionPoint $nodeAConnectionPoint, $nodeB, ConnectionPoint $nodeBConnectionPoint, string $relationType, int $depth, bool $childRelation = false)
+    public function __construct(WrapMySQL $sql, ?TreeNode $callingNode, $nodeA, ConnectionPoint $nodeAConnectionPoint, $nodeB, ConnectionPoint $nodeBConnectionPoint, string $relationType, int $depth, bool $childRelation = false, array $adjNodes = null) 
     {
         $callingID = "";
         if($callingNode != null) $callingID = $callingNode->ID;
 
         if(is_object($nodeA)) $this->nodeA = $nodeA;
-        else $this->nodeA = new TreeNode($sql, $nodeA, $depth - 1, $callingID);
+        else $this->nodeA = new TreeNode($sql, $nodeA, $depth - 1, null);
 
         if(is_object($nodeB)) $this->nodeB = $nodeB;
-        else $this->nodeB = new TreeNode($sql, $nodeB, $depth - 1, $callingID);
+        else $this->nodeB = new TreeNode($sql, $nodeB, $depth - 1, null);
 
         $this->pointA = $nodeAConnectionPoint;
         $this->pointB = $nodeBConnectionPoint;
@@ -261,7 +293,7 @@ class ChildBranch{
         $this->branch = $branch;
 
         if(is_object($node)) $this->node = $node;
-        else $this->node = new TreeNode($sql, $node, $depth - 1, "");
+        else $this->node = new TreeNode($sql, $node, $depth - 1, null);
 
         $this->point = ConnectionPoint::Top;
 
